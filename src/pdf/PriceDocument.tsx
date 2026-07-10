@@ -1,5 +1,6 @@
 import path from 'path';
 
+import { Fragment } from 'react';
 import {
   Document, Image, Page, StyleSheet, Text, View
 } from '@react-pdf/renderer';
@@ -107,8 +108,8 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 12
   },
-  section: {
-    marginBottom: 14
+  categoryHeadingBlock: {
+    marginTop: 14
   },
   categoryHeading: {
     flexDirection: 'row',
@@ -153,7 +154,7 @@ const styles = StyleSheet.create({
     flexShrink: 1,
     flexBasis: 0,
     paddingRight: 10,
-    lineHeight: 1.35
+    lineHeight: 0.72
   },
   price: {
     flexShrink: 0,
@@ -214,21 +215,23 @@ const PriceDocument = () => (
       </View>
 
       {prices.map((category, categoryIndex) => (
-        <View
-          key={category.slug}
-          minPresenceAhead={60}
-          style={styles.section}
-        >
-          <View style={styles.categoryHeading}>
-            <Text style={styles.categoryNum}>{categoryIndex + 1}.</Text>
+        <Fragment key={category.slug}>
+          <View
+            minPresenceAhead={40}
+            wrap={false}
+            style={styles.categoryHeadingBlock}
+          >
+            <View style={styles.categoryHeading}>
+              <Text style={styles.categoryNum}>{categoryIndex + 1}.</Text>
 
-            <Text style={styles.categoryName}>{category.name}</Text>
-          </View>
+              <Text style={styles.categoryName}>{category.name}</Text>
+            </View>
 
-          <View style={styles.tableHeadRow}>
-            <Text style={[styles.tableHeadCell, styles.name]}>Наименование работ</Text>
-            <Text style={[styles.tableHeadCell, styles.price]}>Цена</Text>
-            <Text style={[styles.tableHeadCell, styles.dim]}>Ед.</Text>
+            <View style={styles.tableHeadRow}>
+              <Text style={[styles.tableHeadCell, styles.name]}>Наименование работ</Text>
+              <Text style={[styles.tableHeadCell, styles.price]}>Цена</Text>
+              <Text style={[styles.tableHeadCell, styles.dim]}>Ед.</Text>
+            </View>
           </View>
 
           {category.items.map((item, itemIndex) => (
@@ -242,7 +245,7 @@ const PriceDocument = () => (
               <Text style={styles.dim}>{item.dim}</Text>
             </View>
           ))}
-        </View>
+        </Fragment>
       ))}
 
       <View
