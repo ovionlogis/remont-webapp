@@ -7,15 +7,56 @@
   background-position: 50% 0;
 
   @include only-phone {
-    padding: 40px 20px;
+    padding: 20px 20px;
   }
 }
 
 .logo {
-  line-height: 0;
+  a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
 
-  a:hover {
-    opacity: 0.8;
+    &:hover {
+      opacity: 0.8;
+    }
+
+    @include mediaXXs {
+      gap: 4px;
+    }
+  }
+}
+
+.logoImage {
+  flex-shrink: 0;
+  width: 64px;
+  height: 64px;
+
+  @include mediaSmMax {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+.brandName {
+  font-family: var(--font-body);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--color-text);
+  white-space: nowrap;
+
+  @include mediaSmMax {
+    font-size: 16px;
+  }
+
+  @include mediaXs {
+    font-size: 14px;
+  }
+
+  @include mediaXXs {
+    font-size: 12px;
   }
 }
 
@@ -31,9 +72,22 @@
     font-weight: 700;
     text-decoration: none;
     color: inherit;
+    white-space: nowrap;
 
     &:hover {
       opacity: 0.8;
+    }
+
+    @include mediaSmMax {
+      font-size: 18px;
+    }
+
+    @include mediaXs {
+      font-size: 16px;
+    }
+
+    @include mediaXXs {
+      font-size: 13px;
     }
   }
 }

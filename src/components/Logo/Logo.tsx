@@ -2,9 +2,14 @@ import Image from 'next/image';
 
 import logo from './logo.png';
 
-const Logo = () => (
+interface LogoProps {
+  className?: string;
+}
+
+const Logo = ({ className }: LogoProps) => (
   <Image
     alt="Логотип компании"
+    className={className}
     height={logo.height / 3}
     src={logo}
     width={logo.width / 3}

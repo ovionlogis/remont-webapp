@@ -8,7 +8,9 @@ const Header = () => (
   <header className={styles.header}>
     <div className={styles.logo}>
       <Link href="/">
-        <Logo />
+        <Logo className={styles.logoImage} />
+
+        <span className={styles.brandName}>Ремонт и отделка</span>
       </Link>
     </div>
 
