@@ -1,0 +1,201 @@
+/*
+ * Media queries
+ */
+
+// Universal media query
+@mixin media($dir, $size) {
+  @media (#{$dir}-width: #{$size}) {
+    @content;
+  }
+}
+
+// Predefined media queries
+@mixin mediaXXs {
+  @media (width <= 370px) {
+    @content;
+  }
+}
+
+@mixin mediaXs {
+  @media (width <= 575px) {
+    @content;
+  }
+}
+
+@mixin mediaSm {
+  @media (width >= 576px) and (width <= 767px) {
+    @content;
+  }
+}
+
+@mixin mediaSmMax {
+  @media (width <= 767px) {
+    @content;
+  }
+}
+
+@mixin mediaSmMin {
+  @media (width >= 576px) {
+    @content;
+  }
+}
+
+@mixin mediaMd {
+  @media (width >= 768px) and (width <= 1023px) {
+    @content;
+  }
+}
+
+@mixin mediaMdMax {
+  @media (width <= 1023px) {
+    @content;
+  }
+}
+
+@mixin mediaMdMin {
+  @media (width >= 768px) {
+    @content;
+  }
+}
+
+@mixin mediaLg {
+  @media (width >= 1024px) and (width <= 1279px) {
+    @content;
+  }
+}
+
+@mixin mediaLgMax {
+  @media (width <= 1279px) {
+    @content;
+  }
+}
+
+@mixin mediaLgMin {
+  @media (width >= 1024px) {
+    @content;
+  }
+}
+
+@mixin mediaXl {
+  @media (width >= 1280px) and (width <= 1439px) {
+    @content;
+  }
+}
+
+@mixin mediaXlMax {
+  @media (width <= 1439px) {
+    @content;
+  }
+}
+
+@mixin mediaXlMin {
+  @media (width >= 1280px) {
+    @content;
+  }
+}
+
+@mixin mediaXXl {
+  @media (width >= 1440px) {
+    @content;
+  }
+}
+
+/*
+ * Legacy mixins
+ */
+
+@mixin clearfix {
+  &::after {
+    clear: both;
+    display: table;
+    content: '';
+  }
+}
+
+@mixin only-phone {
+  @media screen and (width <= 767px) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media screen and (width >= 768px) {
+    @content;
+  }
+}
+
+@mixin tablet-down {
+  @media screen and (width <= 1023px) {
+    @content;
+  }
+}
+
+@mixin only-tablet {
+  @media screen and (width >= 768px) and (width <= 1023px) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media screen and (width >= 1024px) {
+    @content;
+  }
+}
+
+@mixin desktop-plus {
+  @media screen and (width >= 1280px) {
+    @content;
+  }
+}
+
+@mixin desktop-down {
+  @media screen and (width <= 1919px) {
+    @content;
+  }
+}
+
+@mixin hirez {
+  @media screen and (width >= 1920px) {
+    @content;
+  }
+}
+
+@mixin hirez-down {
+  @media screen and (width <= 2559px) {
+    @content;
+  }
+}
+
+@mixin hirez-plus {
+  @media screen and (width >= 2560px) {
+    @content;
+  }
+}
+
+// Utils
+
+@mixin text-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@mixin visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+
+@mixin button-drop {
+  margin: 0;
+  appearance: none;
+  padding: 0;
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+  outline: none;
+  cursor: pointer;
+}

@@ -1,0 +1,59 @@
+.content {
+  text-shadow: 0 1px 0 rgb(255 255 255 / 50%);
+}
+
+.heading {
+  margin: 0 0 24px;
+  font-family: var(--font-ui);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+
+  @include only-phone {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+
+.figure {
+  @include button-drop;
+
+  margin: 0;
+  line-height: 1.4;
+  text-align: center;
+  cursor: pointer;
+
+  @include only-phone {
+    font-size: 16px;
+  }
+
+  img {
+    height: auto;
+    max-width: 100%;
+  }
+
+  figcaption {
+    margin-top: 6px;
+    font-size: 17px;
+    text-align: left;
+  }
+}
+
+.image {
+  display: flex;
+  aspect-ratio: 3 / 2;
+
+  img {
+    object-fit: cover;
+    object-position: center;
+  }
+}
+
+.number {
+  margin-right: 6px;
+  opacity: 0.4;
+  font-weight: 700;
+}

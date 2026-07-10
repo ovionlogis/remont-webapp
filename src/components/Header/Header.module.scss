@@ -1,0 +1,39 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 30px;
+  background-image: url('./header.png');
+  background-position: 50% 0;
+
+  @include only-phone {
+    padding: 40px 20px;
+  }
+}
+
+.logo {
+  line-height: 0;
+
+  a:hover {
+    opacity: 0.8;
+  }
+}
+
+.contacts {
+  display: flex;
+  align-items: center;
+}
+
+.phone {
+  a {
+    font-family: var(--font-ui);
+    font-size: 26px;
+    font-weight: 700;
+    text-decoration: none;
+    color: inherit;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+}

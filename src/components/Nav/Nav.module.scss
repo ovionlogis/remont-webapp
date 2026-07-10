@@ -1,0 +1,52 @@
+.nav {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  padding: 0 30px;
+  font-family: var(--font-ui);
+  font-size: 20px;
+  font-weight: 700;
+  background: var(--color-accent);
+
+  @include only-phone {
+    padding: 0;
+    font-size: 18px;
+  }
+}
+
+.list {
+  display: flex;
+
+  @include only-phone {
+    flex-direction: column;
+  }
+
+  li {
+    &:hover a,
+    &.active a {
+      text-shadow: 0 2px 0 #444;
+      background: var(--color-dark);
+    }
+  }
+
+  a {
+    display: block;
+    padding: 15px 40px;
+    text-decoration: none;
+    text-shadow: 0 2px 0 #c68301;
+    color: var(--color-bg);
+
+    @include only-phone {
+      padding: 10px 20px;
+      text-align: center;
+    }
+  }
+}
+
+.price {
+  margin-left: auto;
+
+  @include only-phone {
+    margin-left: 0;
+  }
+}

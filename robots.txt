@@ -1,6 +1,0 @@
-User-agent: *
-Crawl-delay: 2
-Disallow:
-Disallow: /css/
-Disallow: /js/
-Sitemap: https://remont-nsk.net/sitemap.xml

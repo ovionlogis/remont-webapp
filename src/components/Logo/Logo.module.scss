@@ -1,0 +1,19 @@
+.logo {
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-body);
+  line-height: 1.15;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-bg);
+}
+
+.main {
+  font-size: 30px;
+}
+
+.sub {
+  opacity: 0.8;
+  font-size: 13px;
+  letter-spacing: 0.18em;
+}
