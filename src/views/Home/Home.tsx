@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-import promoImg from './promo.jpg';
+import promoImg from './promo.png';
 
 import styles from './Home.module.scss';
 
