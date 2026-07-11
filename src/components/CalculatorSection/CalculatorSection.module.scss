@@ -1,0 +1,32 @@
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: 20px;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 15px;
+  line-height: 1.6;
+
+  p {
+    margin: 0;
+  }
+
+  ul {
+    margin: 0 0 0 20px;
+    list-style: disc;
+
+    li {
+      list-style: inherit;
+    }
+  }
+}

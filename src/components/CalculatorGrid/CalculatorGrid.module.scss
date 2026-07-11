@@ -1,0 +1,25 @@
+.grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  align-items: start;
+  gap: 24px;
+
+  @include mediaSmMax {
+    grid-template-columns: 1fr;
+  }
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.result {
+  position: sticky;
+  top: 20px;
+
+  @include mediaSmMax {
+    position: static;
+  }
+}

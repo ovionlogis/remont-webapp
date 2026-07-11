@@ -1,0 +1,42 @@
+.related {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.title {
+  margin: 0 0 4px;
+  font-family: var(--font-ui);
+  font-size: 20px;
+}
+
+.list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+
+  @include mediaSmMax {
+    grid-template-columns: 1fr;
+  }
+
+  li {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px;
+    background: rgb(0 0 0 / 4%);
+    border-radius: 4px;
+  }
+}
+
+.link {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.description {
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--color-dark);
+}

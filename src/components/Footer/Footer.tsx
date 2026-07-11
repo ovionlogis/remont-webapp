@@ -6,7 +6,8 @@ const links = [
   { href: '/', label: 'Главная' },
   { href: '/work', label: 'Виды работ' },
   { href: '/portfolio', label: 'Портфолио' },
-  { href: '/price', label: 'Прайс-лист' }
+  { href: '/price', label: 'Прайс-лист' },
+  { href: '/calculators', label: 'Калькуляторы' }
 ];
 
 const Footer = () => (

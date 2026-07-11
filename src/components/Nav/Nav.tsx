@@ -9,7 +9,8 @@ const links = [
   { href: '/', label: 'Главная' },
   { href: '/work', label: 'Отделка' },
   { href: '/portfolio', label: 'Портфолио' },
-  { href: '/price', label: 'Прайс' }
+  { href: '/price', label: 'Прайс' },
+  { href: '/calculators', label: 'Калькуляторы' }
 ];
 
 const Nav = () => {
