@@ -1,4 +1,5 @@
 import { Card } from '@heroui/react';
+import { cardVariants } from '@heroui/styles';
 import Link from 'next/link';
 
 import type { CalculatorTool } from '@/content/calculators/data';
@@ -10,25 +11,25 @@ interface CalculatorCardProps {
 }
 
 const CalculatorCard = ({ tool }: CalculatorCardProps) => (
-  <Card className={styles.card}>
-    <Card.Header className={styles.header}>
-      <tool.icon
-        aria-hidden
-        className={styles.icon}
-      />
+  <Link
+    className={cardVariants().base({ className: styles.card })}
+    href={`/calculators/${tool.slug}`}
+  >
+    <tool.icon
+      aria-hidden
+      className={styles.icon}
+    />
 
-      <Link
-        className={styles.title}
-        href={`/calculators/${tool.slug}`}
-      >
+    <Card.Header className={styles.header}>
+      <span className={styles.title}>
         {tool.title}
-      </Link>
+      </span>
     </Card.Header>
 
     <Card.Description className={styles.description}>
       {tool.description}
     </Card.Description>
-  </Card>
+  </Link>
 );
 
 export default CalculatorCard;

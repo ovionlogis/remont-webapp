@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 
+import LdJson from '@/components/LdJson';
 import { createFaqJsonLd } from '@/utils/faqJsonLd';
 import { createMetadata } from '@/utils/metadata';
 import LaminateCalculator, { faqItems } from '@/views/LaminateCalculator';
@@ -12,10 +13,7 @@ export const metadata: Metadata = createMetadata({
 
 const LaminateCalculatorPage = () => (
   <>
-    <script
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(createFaqJsonLd(faqItems)) }}
-      type="application/ld+json"
-    />
+    <LdJson json={createFaqJsonLd(faqItems)} />
 
     <LaminateCalculator />
   </>

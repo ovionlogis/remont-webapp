@@ -229,7 +229,7 @@ const PaintCalculator = () => {
 
       <Faq items={faqItems} />
 
-      <RelatedCalculators slugs={['putty-consumption', 'wallpaper', 'tile']} />
+      <RelatedCalculators slugs={['putty-consumption', 'plaster-consumption', 'wallpaper', 'tile']} />
 
       <Disclaimer>
         Расчёт — количество краски по введённым данным, а не смета работ. Точный расход зависит от

@@ -326,7 +326,7 @@ const FloorScreedCalculator = () => {
 
       <Faq items={faqItems} />
 
-      <RelatedCalculators slugs={['tile', 'laminate', 'putty-consumption']} />
+      <RelatedCalculators slugs={['tile', 'laminate', 'putty-consumption', 'concrete']} />
 
       <Disclaimer>
         Расчёт — количество материала для стяжки по введённым данным, а не проектный расчёт

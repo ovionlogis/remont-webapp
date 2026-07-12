@@ -1,8 +1,10 @@
 import Script from 'next/script';
+import type { HomeAndConstructionBusinessLeaf, WithContext } from 'schema-dts';
 
+import LdJson from '@/components/LdJson';
 import config from '@/config';
 
-const jsonLd = {
+const jsonLd: WithContext<HomeAndConstructionBusinessLeaf> = {
   '@context': 'https://schema.org',
   '@type': 'HomeAndConstructionBusiness',
   url: config.APP_URL,
@@ -52,11 +54,7 @@ const BodyScripts = () => (
       </Script>
     )}
 
-    <script
-      // eslint-disable-next-line react/no-danger
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      type="application/ld+json"
-    />
+    <LdJson json={jsonLd} />
   </>
 );
 

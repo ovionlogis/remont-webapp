@@ -1,9 +1,14 @@
 import {
+  Blocks,
+  Building2,
   Grid2x2,
   Layers3,
+  Paintbrush,
   PaintBucket,
   PaintRoller,
+  SquareStack,
   TableCellsSplit,
+  Thermometer,
   Wallpaper
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
@@ -28,7 +33,7 @@ export const calculatorCategories: CalculatorCategory[] = [
   {
     slug: 'finishing',
     title: 'Отделка',
-    description: 'Количество плитки, обоев и ламината на комнату по её размерам.'
+    description: 'Количество плитки и обоев на комнату по её размерам.'
   },
   {
     slug: 'materials',
@@ -38,7 +43,12 @@ export const calculatorCategories: CalculatorCategory[] = [
   {
     slug: 'floors',
     title: 'Полы',
-    description: 'Расчёт смеси для стяжки пола под финишное покрытие.'
+    description: 'Расчёт стяжки и ламината для финишного покрытия пола.'
+  },
+  {
+    slug: 'construction',
+    title: 'Конструктив',
+    description: 'Расчёт кладки стен и объёма бетона для фундаментов, плит и колонн.'
   }
 ];
 
@@ -60,15 +70,6 @@ export const calculatorTools: CalculatorTool[] = [
     description: 'Количество рулонов обоев по периметру комнаты, ширине рулона и раппорту рисунка.',
     priceCategorySlug: 'wallpaper',
     icon: Wallpaper
-  },
-  {
-    slug: 'laminate',
-    title: 'Калькулятор ламината',
-    shortTitle: 'Ламинат',
-    category: 'finishing',
-    description: 'Число упаковок ламината по площади помещения и размеру доски.',
-    priceCategorySlug: 'flooring',
-    icon: TableCellsSplit
   },
   {
     slug: 'putty-consumption',
@@ -96,5 +97,59 @@ export const calculatorTools: CalculatorTool[] = [
     description: 'Количество сухой смеси или цемента и песка на стяжку пола заданной толщины.',
     priceCategorySlug: 'floor-screed',
     icon: Layers3
+  },
+  {
+    slug: 'laminate',
+    title: 'Калькулятор ламината',
+    shortTitle: 'Ламинат',
+    category: 'floors',
+    description: 'Число упаковок ламината по площади помещения и размеру доски.',
+    priceCategorySlug: 'flooring',
+    icon: TableCellsSplit
+  },
+  {
+    slug: 'drywall',
+    title: 'Калькулятор гипсокартона',
+    shortTitle: 'Гипсокартон',
+    category: 'materials',
+    description: 'Число листов гипсокартона, длина профиля и количество саморезов по площади стен или потолка.',
+    priceCategorySlug: 'drywall',
+    icon: SquareStack
+  },
+  {
+    slug: 'plaster-consumption',
+    title: 'Расход штукатурки',
+    shortTitle: 'Штукатурка',
+    category: 'materials',
+    description: 'Расход штукатурки в кг и мешках по площади, толщине слоя и типу смеси.',
+    priceCategorySlug: 'plastering',
+    icon: Paintbrush
+  },
+  {
+    slug: 'insulation',
+    title: 'Калькулятор утеплителя',
+    shortTitle: 'Утепление',
+    category: 'materials',
+    description: 'Объём утеплителя и количество упаковок по площади и толщине слоя.',
+    priceCategorySlug: 'insulation',
+    icon: Thermometer
+  },
+  {
+    slug: 'masonry',
+    title: 'Калькулятор кирпича и блоков',
+    shortTitle: 'Кладка',
+    category: 'construction',
+    description: 'Количество кирпича или блоков и объём раствора по площади и толщине кладки.',
+    priceCategorySlug: 'masonry',
+    icon: Blocks
+  },
+  {
+    slug: 'concrete',
+    title: 'Калькулятор бетона',
+    shortTitle: 'Бетон',
+    category: 'construction',
+    description: 'Объём бетона в кубометрах для плиты, ленты фундамента или свай с учётом запаса.',
+    priceCategorySlug: 'concrete',
+    icon: Building2
   }
 ];

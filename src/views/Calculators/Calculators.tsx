@@ -1,26 +1,42 @@
 import { Typography } from '@heroui/react';
 import Link from 'next/link';
 
+import Breadcrumbs from '@/components/Breadcrumbs';
 import CalculatorCard from '@/components/CalculatorCard';
+import LdJson from '@/components/LdJson';
 import { calculatorCategories, calculatorTools } from '@/content/calculators/data';
+import { createBreadcrumbJsonLd } from '@/utils/breadcrumbJsonLd';
 
 import styles from './Calculators.module.scss';
 
+const BREADCRUMB_ITEMS = [
+  { label: 'Главная', href: '/' },
+  { label: 'Калькуляторы', href: '/calculators' }
+];
+
 const Calculators = () => (
   <div className={styles.content}>
-    <Typography.Heading
-      className={styles.title}
-      level={1}
-    >
-      Калькуляторы для ремонта
-    </Typography.Heading>
+    <LdJson json={createBreadcrumbJsonLd(BREADCRUMB_ITEMS)} />
 
-    <Typography.Paragraph className={styles.intro}>
-      Онлайн-калькуляторы помогают заранее прикинуть, сколько материала понадобится на комнату:
-      плитки, обоев, ламината, шпаклёвки, краски или смеси для стяжки пола. Каждый расчёт — это
-      количество материала по введённым размерам, а не стоимость ремонта: калькуляторы не считают
-      смету и не дают итоговую цену работ.
-    </Typography.Paragraph>
+    <div className={styles.top}>
+      <Breadcrumbs items={[{ label: 'Главная', href: '/' }, { label: 'Калькуляторы' }]} />
+
+      <div className={styles.head}>
+        <Typography.Heading
+          className={styles.title}
+          level={1}
+        >
+          Калькуляторы для ремонта
+        </Typography.Heading>
+
+        <Typography.Paragraph className={styles.intro}>
+          Онлайн-калькуляторы помогают заранее прикинуть, сколько материала понадобится на комнату:
+          плитки, обоев, ламината, шпаклёвки, краски или смеси для стяжки пола. Каждый расчёт — это
+          количество материала по введённым размерам, а не стоимость ремонта: калькуляторы не считают
+          смету и не дают итоговую цену работ.
+        </Typography.Paragraph>
+      </div>
+    </div>
 
     {calculatorCategories.map((category) => (
       <section

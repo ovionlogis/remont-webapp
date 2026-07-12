@@ -21,31 +21,31 @@ import {
 
 import { faqItems } from './faqItems';
 
-const PUTTY_TYPES = [
-  { value: 'gypsum', label: 'Гипсовая финишная (тип. 0.9 кг/м²/мм)', rate: 0.9 },
-  { value: 'polymer', label: 'Полимерная (тип. 1.0 кг/м²/мм)', rate: 1 },
-  { value: 'cement', label: 'Цементная базовая (тип. 1.4 кг/м²/мм)', rate: 1.4 }
+const PLASTER_TYPES = [
+  { value: 'gypsum-machine', label: 'Гипсовая машинного нанесения (тип. 0.85 кг/м²/мм)', rate: 0.85 },
+  { value: 'gypsum-hand', label: 'Гипсовая ручного нанесения (тип. 0.9 кг/м²/мм)', rate: 0.9 },
+  { value: 'lime-cement', label: 'Известково-цементная (тип. 1.5 кг/м²/мм)', rate: 1.5 },
+  { value: 'cement-sand', label: 'Цементно-песчаная (тип. 1.7 кг/м²/мм)', rate: 1.7 }
 ];
 
 const BAG_WEIGHT_PRESETS = [
-  { value: '20', label: '20 кг' },
   { value: '25', label: '25 кг' },
   { value: '30', label: '30 кг' }
 ];
 
-const PuttyCalculator = () => {
-  const [areaMode, setAreaMode] = useState('area');
+const PlasterCalculator = () => {
+  const [areaMode, setAreaMode] = useState('walls');
   const [areaM2, setAreaM2] = useState('30');
   const [perimeterM, setPerimeterM] = useState('14');
   const [heightM, setHeightM] = useState('2.7');
   const [openingsM2, setOpeningsM2] = useState('0');
-  const [puttyType, setPuttyType] = useState('gypsum');
+  const [plasterType, setPlasterType] = useState('gypsum-machine');
   const [rateOverride, setRateOverride] = useState('');
-  const [thicknessMm, setThicknessMm] = useState('2');
+  const [thicknessMm, setThicknessMm] = useState('15');
   const [layers, setLayers] = useState('1');
   const [wastePercent, setWastePercent] = useState('10');
-  const [bagWeightPreset, setBagWeightPreset] = useState('25');
-  const [bagWeightKg, setBagWeightKg] = useState('25');
+  const [bagWeightPreset, setBagWeightPreset] = useState('30');
+  const [bagWeightKg, setBagWeightKg] = useState('30');
 
   const handleBagPresetChange = useCallback((value: string) => {
     setBagWeightPreset(value);
@@ -73,13 +73,13 @@ const PuttyCalculator = () => {
       area = perimeter * height - openings;
     }
 
-    const typeOption = PUTTY_TYPES.find((item) => item.value === puttyType);
+    const typeOption = PLASTER_TYPES.find((item) => item.value === plasterType);
     const rate = override !== null && override > 0 ? override : typeOption?.rate ?? null;
 
     const isValid = area !== null && area > 0
-      && thickness !== null && isInRange(thickness, 0.1, 20)
-      && layersNum !== null && isInRange(layersNum, 1, 5)
-      && waste !== null && isInRange(waste, 0, 20)
+      && thickness !== null && isInRange(thickness, 5, 50)
+      && layersNum !== null && isInRange(layersNum, 1, 3)
+      && waste !== null && isInRange(waste, 0, 25)
       && rate !== null && isInRange(rate, 0.3, 3);
 
     if (!isValid || area === null || thickness === null || layersNum === null || waste === null || rate === null) {
@@ -93,21 +93,20 @@ const PuttyCalculator = () => {
     return {
       area, totalKg, bags, rate, isOverride: override !== null && override > 0
     };
-  }, [areaMode, areaM2, perimeterM, heightM, openingsM2, puttyType, rateOverride, thicknessMm, layers, wastePercent, bagWeightKg]);
+  }, [areaMode, areaM2, perimeterM, heightM, openingsM2, plasterType, rateOverride, thicknessMm, layers, wastePercent, bagWeightKg]);
 
   const metrics = result ? [
     { label: 'Площадь поверхности', value: `${formatNumber(result.area)} м²` },
     { label: 'Применённая норма', value: `${formatNumber(result.rate)} кг/м²/мм${result.isOverride ? ' (ваша)' : ' (типовая)'}` },
     ...(result.bags !== null ? [{ label: 'Мешков', value: `${result.bags} шт.` }] : []),
-    { label: 'Тип шпаклёвки', value: PUTTY_TYPES.find((type) => type.value === puttyType)?.label.replace(/\s*\(.*\)$/, '') ?? '' },
-    { label: 'Толщина слоя', value: `${thicknessMm} мм` },
-    { label: 'Слоёв', value: `${layers} шт.` }
+    { label: 'Тип штукатурки', value: PLASTER_TYPES.find((type) => type.value === plasterType)?.label.replace(/\s*\(.*\)$/, '') ?? '' },
+    { label: 'Толщина слоя', value: `${thicknessMm} мм` }
   ] : [];
 
   return (
     <CalculatorPage
-      intro="Калькулятор считает расход шпаклёвки в килограммах и мешках по площади поверхности, толщине слоя и типу материала. Это ориентир для закупки материала, а не стоимость штукатурно-малярных работ."
-      title="Калькулятор расхода шпаклёвки"
+      intro="Калькулятор считает расход штукатурки в килограммах и мешках по площади поверхности, толщине слоя и типу смеси. Это ориентир для закупки материала, а не стоимость штукатурных работ."
+      title="Калькулятор расхода штукатурки"
     >
       <CalculatorGrid
         fields={(
@@ -116,8 +115,8 @@ const PuttyCalculator = () => {
               <SegmentedControl
                 label="Как ввести площадь"
                 options={[
-                  { value: 'area', label: 'Площадь напрямую' },
-                  { value: 'walls', label: 'Периметр × высота' }
+                  { value: 'walls', label: 'Периметр × высота' },
+                  { value: 'area', label: 'Площадь напрямую' }
                 ]}
                 value={areaMode}
                 onChange={setAreaMode}
@@ -145,7 +144,7 @@ const PuttyCalculator = () => {
                     onChange={setHeightM}
                   />
                   <NumberField
-                    hint="Двери, окна и другие зоны без шпаклёвки"
+                    hint="Двери, окна и другие зоны без штукатурки"
                     label="Площадь проёмов"
                     unit="м²"
                     value={openingsM2}
@@ -155,12 +154,12 @@ const PuttyCalculator = () => {
               )}
             </FieldGroup>
 
-            <FieldGroup title="Шпаклёвка">
+            <FieldGroup title="Штукатурка">
               <SelectField
-                label="Тип шпаклёвки"
-                options={PUTTY_TYPES.map((type) => ({ value: type.value, label: type.label }))}
-                value={puttyType}
-                onChange={setPuttyType}
+                label="Тип штукатурки"
+                options={PLASTER_TYPES.map((type) => ({ value: type.value, label: type.label }))}
+                value={plasterType}
+                onChange={setPlasterType}
               />
 
               <NumberField
@@ -173,7 +172,7 @@ const PuttyCalculator = () => {
 
               <NumberField
                 formatOptions={MILLIMETER_FORMAT}
-                label="Толщина слоя"
+                label="Средняя толщина слоя"
                 value={thicknessMm}
                 onChange={setThicknessMm}
               />
@@ -213,11 +212,11 @@ const PuttyCalculator = () => {
         )}
         result={(
           <ResultCard
-            heading="Нужно шпаклёвки"
+            heading="Нужно штукатурки"
             invalid={!result}
             invalidMessage="Укажите площадь, толщину слоя и норму расхода"
             metrics={metrics}
-            note="Норма расхода зависит от производителя — типовое значение можно переопределить данными с упаковки."
+            note="Норма расхода зависит от производителя и неровности стен — типовое значение можно переопределить данными с упаковки."
             value={result ? `${formatNumber(result.totalKg)} кг` : undefined}
           />
         )}
@@ -225,31 +224,32 @@ const PuttyCalculator = () => {
 
       <CalculatorSection title="Как считает калькулятор">
         <Typography.Paragraph>
-          Расход за один слой — это площадь поверхности, умноженная на толщину слоя в миллиметрах и
-          норму расхода на 1 мм. Итог умножается на количество слоёв и увеличивается на процент
-          запаса. Стартовая и финишная шпаклёвка обычно кладутся разной толщиной и имеют разный
-          расход — если применяете оба материала, посчитайте их отдельно.
+          Расход за один слой — это площадь поверхности, умноженная на среднюю толщину слоя в
+          миллиметрах и норму расхода на 1 мм. Итог умножается на количество слоёв и увеличивается
+          на процент запаса. Среднюю толщину для сильно неровных стен лучше определить замером
+          правилом в нескольких точках, а не на глаз.
         </Typography.Paragraph>
 
         <Typography.Paragraph>
-          Норма расхода жёстко зависит от конкретного производителя: калькулятор даёт типовые
-          ориентиры по категории материала, но точный расход всегда указан на упаковке купленного
-          товара — используйте поле переопределения для точного результата. Итог — объём закупки
-          материала, а не расход времени или денег на работу.
+          Норма расхода жёстко зависит от конкретного производителя и способа нанесения (машинное
+          или ручное): калькулятор даёт типовые ориентиры по категории смеси, но точный расход
+          всегда указан на упаковке купленного товара — используйте поле переопределения для
+          точного результата. Итог — объём закупки материала, а не расход времени или денег на
+          работу.
         </Typography.Paragraph>
       </CalculatorSection>
 
       <Faq items={faqItems} />
 
-      <RelatedCalculators slugs={['plaster-consumption', 'paint-consumption', 'tile', 'floor-screed']} />
+      <RelatedCalculators slugs={['putty-consumption', 'drywall', 'paint-consumption']} />
 
       <Disclaimer>
-        Расчёт — количество шпаклёвки по введённым данным, а не смета работ. Точный расход зависит
-        от качества основания и квалификации мастера — уточняйте у прораба при большом объёме
+        Расчёт — количество штукатурки по введённым данным, а не смета работ. Точный расход зависит
+        от неровности основания и квалификации мастера — уточняйте у прораба при большом объёме
         закупки.
       </Disclaimer>
     </CalculatorPage>
   );
 };
 
-export default PuttyCalculator;
+export default PlasterCalculator;
