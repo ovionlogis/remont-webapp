@@ -5,7 +5,7 @@ import { createMetadata } from '@/utils/metadata';
 import PaintCalculator, { faqItems } from '@/views/PaintCalculator';
 
 export const metadata: Metadata = createMetadata({
-  title: 'Расход краски — калькулятор расчёта на м²',
+  title: 'Калькулятор расхода краски',
   description: 'Расчёт расхода краски в литрах и банках по площади, типу поверхности и количеству слоёв. Точный подбор объёма закупки.',
   url: '/calculators/paint-consumption'
 });

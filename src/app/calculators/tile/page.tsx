@@ -5,7 +5,7 @@ import { createMetadata } from '@/utils/metadata';
 import TileCalculator, { faqItems } from '@/views/TileCalculator';
 
 export const metadata: Metadata = createMetadata({
-  title: 'Калькулятор плитки — расчёт количества на пол и стены',
+  title: 'Калькулятор плитки — расчёт количества',
   description: 'Онлайн-расчёт количества плитки на комнату по размерам помещения и плитки, с учётом способа укладки и запаса. Расчёт упаковок.',
   url: '/calculators/tile'
 });

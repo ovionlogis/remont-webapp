@@ -49,7 +49,7 @@ const Price = () => {
           className={styles.title}
           level={1}
         >
-          Прайс-лист
+          Прайс-лист на ремонт квартир в Бердске
         </Typography.Heading>
 
         <ButtonLink

@@ -5,7 +5,7 @@ import { createMetadata } from '@/utils/metadata';
 import FloorScreedCalculator, { faqItems } from '@/views/FloorScreedCalculator';
 
 export const metadata: Metadata = createMetadata({
-  title: 'Калькулятор стяжки пола — расчёт смеси по площади',
+  title: 'Калькулятор стяжки пола — расчёт смеси',
   description: 'Расчёт количества сухой смеси и мешков для стяжки пола по площади и толщине слоя. Для готовых смесей и расчёта цемент/песок.',
   url: '/calculators/floor-screed'
 });

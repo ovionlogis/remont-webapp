@@ -5,7 +5,7 @@ import { createMetadata } from '@/utils/metadata';
 import WallpaperCalculator, { faqItems } from '@/views/WallpaperCalculator';
 
 export const metadata: Metadata = createMetadata({
-  title: 'Калькулятор обоев — расчёт количества рулонов',
+  title: 'Калькулятор обоев — расчёт рулонов',
   description: 'Расчёт количества рулонов обоев по периметру и высоте комнаты, ширине рулона и раппорту рисунка. Точный подсчёт полос.',
   url: '/calculators/wallpaper'
 });

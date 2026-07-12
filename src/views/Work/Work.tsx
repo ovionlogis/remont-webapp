@@ -11,7 +11,7 @@ const Work = () => (
       className={styles.head}
       level={1}
     >
-      Отделочные работы
+      Отделочные работы в Бердске
     </Typography.Heading>
 
     <ol className={styles.list}>
