@@ -1,18 +1,23 @@
 'use client';
 
 import { useCallback, useMemo, useState } from 'react';
+import { Typography } from '@heroui/react';
 
 import CalculatorGrid from '@/components/CalculatorGrid';
 import CalculatorPage from '@/components/CalculatorPage';
 import CalculatorSection from '@/components/CalculatorSection';
 import Disclaimer from '@/components/Disclaimer';
 import Faq from '@/components/Faq';
+import FieldGroup from '@/components/FieldGroup';
 import NumberField from '@/components/NumberField';
 import RelatedCalculators from '@/components/RelatedCalculators';
 import ResultCard from '@/components/ResultCard';
 import SegmentedControl from '@/components/SegmentedControl';
 import SelectField from '@/components/SelectField';
 import { formatNumber, isInRange, parseNumber } from '@/utils/calculator';
+import {
+  KILOGRAM_FORMAT, METER_FORMAT, MILLIMETER_FORMAT, PERCENT_FORMAT
+} from '@/utils/numberFieldFormats';
 
 import { faqItems } from './faqItems';
 
@@ -137,7 +142,8 @@ const FloorScreedCalculator = () => {
   if (result?.method === 'mix') {
     metrics = [
       { label: 'Площадь помещения', value: `${formatNumber(result.area)} м²` },
-      ...(result.bags !== null ? [{ label: 'Мешков', value: `${result.bags} шт.` }] : [])
+      ...(result.bags !== null ? [{ label: 'Мешков', value: `${result.bags} шт.` }] : []),
+      { label: 'Толщина стяжки', value: `${thicknessMm} мм` }
     ];
     value = `${formatNumber(result.totalKg)} кг`;
   } else if (result) {
@@ -145,7 +151,9 @@ const FloorScreedCalculator = () => {
     metrics = [
       { label: 'Площадь помещения', value: `${formatNumber(result.area)} м²` },
       { label: 'Объём стяжки', value: `${formatNumber(result.volumeM3, 3)} м³` },
-      { label: 'Песка', value: `${formatNumber(result.sandM3, 3)} м³` }
+      { label: 'Песка', value: `${formatNumber(result.sandM3, 3)} м³` },
+      { label: 'Толщина стяжки', value: `${thicknessMm} мм` },
+      { label: 'Пропорция цемент : песок', value: `${cementParts} : ${sandParts}` }
     ];
     value = `${formatNumber(result.cementKg)} кг цемента`;
   }
@@ -162,59 +170,63 @@ const FloorScreedCalculator = () => {
       <CalculatorGrid
         fields={(
           <>
-            <SegmentedControl
-              label="Как ввести площадь"
-              options={[
-                { value: 'dimensions', label: 'Длина × ширина' },
-                { value: 'area', label: 'Площадь напрямую' }
-              ]}
-              value={areaMode}
-              onChange={setAreaMode}
-            />
-
-            {areaMode === 'dimensions' ? (
-              <>
-                <NumberField
-                  label="Длина помещения"
-                  unit="м"
-                  value={lengthM}
-                  onChange={setLengthM}
-                />
-                <NumberField
-                  label="Ширина помещения"
-                  unit="м"
-                  value={widthM}
-                  onChange={setWidthM}
-                />
-              </>
-            ) : (
-              <NumberField
-                label="Площадь помещения"
-                unit="м²"
-                value={areaM2}
-                onChange={setAreaM2}
+            <FieldGroup title="Помещение">
+              <SegmentedControl
+                label="Как ввести площадь"
+                options={[
+                  { value: 'dimensions', label: 'Длина × ширина' },
+                  { value: 'area', label: 'Площадь напрямую' }
+                ]}
+                value={areaMode}
+                onChange={setAreaMode}
               />
-            )}
 
-            <NumberField
-              label="Толщина стяжки"
-              unit="мм"
-              value={thicknessMm}
-              onChange={setThicknessMm}
-            />
+              {areaMode === 'dimensions' ? (
+                <>
+                  <NumberField
+                    formatOptions={METER_FORMAT}
+                    label="Длина помещения"
+                    value={lengthM}
+                    onChange={setLengthM}
+                  />
+                  <NumberField
+                    formatOptions={METER_FORMAT}
+                    label="Ширина помещения"
+                    value={widthM}
+                    onChange={setWidthM}
+                  />
+                </>
+              ) : (
+                <NumberField
+                  label="Площадь помещения"
+                  unit="м²"
+                  value={areaM2}
+                  onChange={setAreaM2}
+                />
+              )}
 
-            <SegmentedControl
-              label="Способ расчёта"
-              options={[
-                { value: 'mix', label: 'Готовая сухая смесь' },
-                { value: 'volume', label: 'Цемент + песок' }
-              ]}
-              value={calcMethod}
-              onChange={setCalcMethod}
-            />
+              <NumberField
+                formatOptions={MILLIMETER_FORMAT}
+                label="Толщина стяжки"
+                value={thicknessMm}
+                onChange={setThicknessMm}
+              />
+            </FieldGroup>
+
+            <FieldGroup title="Способ расчёта">
+              <SegmentedControl
+                label="Способ расчёта"
+                options={[
+                  { value: 'mix', label: 'Готовая сухая смесь' },
+                  { value: 'volume', label: 'Цемент + песок' }
+                ]}
+                value={calcMethod}
+                onChange={setCalcMethod}
+              />
+            </FieldGroup>
 
             {calcMethod === 'mix' ? (
-              <>
+              <FieldGroup title="Смесь">
                 <NumberField
                   hint="Типовое значение для ЦПС-смесей, уточните по этикетке"
                   label="Расход смеси на м²/мм"
@@ -231,14 +243,14 @@ const FloorScreedCalculator = () => {
                 />
 
                 <NumberField
+                  formatOptions={KILOGRAM_FORMAT}
                   label="Вес мешка"
-                  unit="кг"
                   value={bagWeightKg}
                   onChange={setBagWeightKg}
                 />
-              </>
+              </FieldGroup>
             ) : (
-              <>
+              <FieldGroup title="Материалы">
                 <SelectField
                   label="Пропорция цемент : песок"
                   options={PROPORTION_PRESETS.map((preset) => ({ value: preset.value, label: preset.label }))}
@@ -246,18 +258,22 @@ const FloorScreedCalculator = () => {
                   onChange={handleProportionChange}
                 />
 
-                <NumberField
-                  label="Частей цемента"
-                  unit="доля"
-                  value={cementParts}
-                  onChange={setCementParts}
-                />
-                <NumberField
-                  label="Частей песка"
-                  unit="доля"
-                  value={sandParts}
-                  onChange={setSandParts}
-                />
+                {proportionPreset === 'custom' && (
+                  <>
+                    <NumberField
+                      label="Частей цемента"
+                      unit="доля"
+                      value={cementParts}
+                      onChange={setCementParts}
+                    />
+                    <NumberField
+                      label="Частей песка"
+                      unit="доля"
+                      value={sandParts}
+                      onChange={setSandParts}
+                    />
+                  </>
+                )}
 
                 <NumberField
                   hint="Типовое ориентировочное значение, зависит от марки цемента"
@@ -266,15 +282,17 @@ const FloorScreedCalculator = () => {
                   value={cementRateKgM3}
                   onChange={setCementRateKgM3}
                 />
-              </>
+              </FieldGroup>
             )}
 
-            <NumberField
-              label="Запас"
-              unit="%"
-              value={wastePercent}
-              onChange={setWastePercent}
-            />
+            <FieldGroup title="Запас">
+              <NumberField
+                formatOptions={PERCENT_FORMAT}
+                label="Запас"
+                value={wastePercent}
+                onChange={setWastePercent}
+              />
+            </FieldGroup>
           </>
         )}
         result={(
@@ -290,20 +308,20 @@ const FloorScreedCalculator = () => {
       />
 
       <CalculatorSection title="Как считает калькулятор">
-        <p>
+        <Typography.Paragraph>
           Для готовой сухой смеси расход считается напрямую: площадь × толщина в миллиметрах × норма
           расхода смеси на м²/мм, с добавлением запаса. Для варианта «цемент + песок» сначала
           считается объём стяжки в кубометрах, а затем масса цемента и объём песка — по выбранной
           пропорции и норме расхода цемента на кубометр готовой смеси.
-        </p>
+        </Typography.Paragraph>
 
-        <p>
+        <Typography.Paragraph>
           Готовая смесь проще считать и её расход стабильнее — он указан производителем. Объёмный
           расчёт дешевле, но норма расхода цемента — усреднённый ориентир, который зависит от марки
           цемента и влажности песка. Расчёт не заменяет проектный расчёт нагрузки на перекрытие и не
           учитывает армирование или маяки — для тонких стяжек (менее 30 мм) обычно применяют другие
           решения, например наливной пол.
-        </p>
+        </Typography.Paragraph>
       </CalculatorSection>
 
       <Faq items={faqItems} />

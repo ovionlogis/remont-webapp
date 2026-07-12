@@ -1,18 +1,21 @@
 'use client';
 
 import { useCallback, useMemo, useState } from 'react';
+import { Typography } from '@heroui/react';
 
 import CalculatorGrid from '@/components/CalculatorGrid';
 import CalculatorPage from '@/components/CalculatorPage';
 import CalculatorSection from '@/components/CalculatorSection';
 import Disclaimer from '@/components/Disclaimer';
 import Faq from '@/components/Faq';
+import FieldGroup from '@/components/FieldGroup';
 import NumberField from '@/components/NumberField';
 import RelatedCalculators from '@/components/RelatedCalculators';
 import ResultCard from '@/components/ResultCard';
 import SegmentedControl from '@/components/SegmentedControl';
 import SelectField from '@/components/SelectField';
 import { formatNumber, isInRange, parseNumber } from '@/utils/calculator';
+import { METER_FORMAT, MILLIMETER_FORMAT, PERCENT_FORMAT } from '@/utils/numberFieldFormats';
 
 import { faqItems } from './faqItems';
 
@@ -118,7 +121,9 @@ const LaminateCalculator = () => {
     { label: 'Площадь помещения', value: `${formatNumber(result.area)} м²` },
     { label: 'Площадь с запасом', value: `${formatNumber(result.areaWithWaste)} м²` },
     { label: 'Запас на подрезку', value: `${result.waste}%` },
-    ...(result.packs !== null ? [{ label: 'Досок', value: `${result.boardsWithWaste} шт.` }] : [])
+    ...(result.packs !== null ? [{ label: 'Досок', value: `${result.boardsWithWaste} шт.` }] : []),
+    { label: 'Формат доски', value: `${boardLengthMm} × ${boardWidthMm} мм` },
+    { label: 'Способ укладки', value: LAYOUT_OPTIONS.find((option) => option.value === layout)?.label ?? '' }
   ] : [];
 
   const note = result?.packs === null
@@ -141,90 +146,102 @@ const LaminateCalculator = () => {
       <CalculatorGrid
         fields={(
           <>
-            <SegmentedControl
-              label="Как ввести площадь"
-              options={[
-                { value: 'dimensions', label: 'Длина × ширина' },
-                { value: 'area', label: 'Площадь напрямую' }
-              ]}
-              value={areaMode}
-              onChange={setAreaMode}
-            />
-
-            {areaMode === 'dimensions' ? (
-              <>
-                <NumberField
-                  label="Длина помещения"
-                  unit="м"
-                  value={lengthM}
-                  onChange={setLengthM}
-                />
-                <NumberField
-                  label="Ширина помещения"
-                  unit="м"
-                  value={widthM}
-                  onChange={setWidthM}
-                />
-              </>
-            ) : (
-              <NumberField
-                label="Площадь помещения"
-                unit="м²"
-                value={areaM2}
-                onChange={setAreaM2}
+            <FieldGroup title="Помещение">
+              <SegmentedControl
+                label="Как ввести площадь"
+                options={[
+                  { value: 'dimensions', label: 'Длина × ширина' },
+                  { value: 'area', label: 'Площадь напрямую' }
+                ]}
+                value={areaMode}
+                onChange={setAreaMode}
               />
-            )}
 
-            <SelectField
-              label="Формат доски"
-              options={BOARD_PRESETS.map((preset) => ({ value: preset.value, label: preset.label }))}
-              value={boardPreset}
-              onChange={handlePresetChange}
-            />
+              {areaMode === 'dimensions' ? (
+                <>
+                  <NumberField
+                    formatOptions={METER_FORMAT}
+                    label="Длина помещения"
+                    value={lengthM}
+                    onChange={setLengthM}
+                  />
+                  <NumberField
+                    formatOptions={METER_FORMAT}
+                    label="Ширина помещения"
+                    value={widthM}
+                    onChange={setWidthM}
+                  />
+                </>
+              ) : (
+                <NumberField
+                  label="Площадь помещения"
+                  unit="м²"
+                  value={areaM2}
+                  onChange={setAreaM2}
+                />
+              )}
+            </FieldGroup>
 
-            <NumberField
-              label="Длина доски"
-              unit="мм"
-              value={boardLengthMm}
-              onChange={setBoardLengthMm}
-            />
-            <NumberField
-              label="Ширина доски"
-              unit="мм"
-              value={boardWidthMm}
-              onChange={setBoardWidthMm}
-            />
+            <FieldGroup title="Доска">
+              <SelectField
+                label="Формат доски"
+                options={BOARD_PRESETS.map((preset) => ({ value: preset.value, label: preset.label }))}
+                value={boardPreset}
+                onChange={handlePresetChange}
+              />
 
-            <SegmentedControl
-              label="Способ укладки"
-              options={LAYOUT_OPTIONS.map((option) => ({ value: option.value, label: option.label }))}
-              value={layout}
-              onChange={handleLayoutChange}
-            />
+              {boardPreset === 'custom' && (
+                <>
+                  <NumberField
+                    formatOptions={MILLIMETER_FORMAT}
+                    label="Длина доски"
+                    value={boardLengthMm}
+                    onChange={setBoardLengthMm}
+                  />
+                  <NumberField
+                    formatOptions={MILLIMETER_FORMAT}
+                    label="Ширина доски"
+                    value={boardWidthMm}
+                    onChange={setBoardWidthMm}
+                  />
+                </>
+              )}
+            </FieldGroup>
 
-            <NumberField
-              hint="Подобран под способ укладки, можно изменить вручную"
-              label="Запас на подрезку"
-              unit="%"
-              value={wastePercent}
-              onChange={setWastePercent}
-            />
+            <FieldGroup title="Укладка и запас">
+              <SegmentedControl
+                label="Способ укладки"
+                options={LAYOUT_OPTIONS.map((option) => ({ value: option.value, label: option.label }))}
+                value={layout}
+                onChange={handleLayoutChange}
+              />
 
-            <NumberField
-              hint="Если известно — посчитаем количество упаковок"
-              label="Досок в упаковке"
-              unit="шт."
-              value={boardsPerPack}
-              onChange={setBoardsPerPack}
-            />
+              <NumberField
+                formatOptions={PERCENT_FORMAT}
+                hint="Подобран под способ укладки, можно изменить вручную"
+                label="Запас на подрезку"
+                value={wastePercent}
+                onChange={setWastePercent}
+              />
+            </FieldGroup>
 
-            <NumberField
-              hint="Альтернатива предыдущему полю, если известна площадь одной упаковки"
-              label="Площадь упаковки"
-              unit="м²"
-              value={packAreaM2}
-              onChange={setPackAreaM2}
-            />
+            <FieldGroup title="Упаковка">
+              <NumberField
+                hint="Если известно — посчитаем количество упаковок"
+                label="Досок в упаковке"
+                unit="шт."
+                value={boardsPerPack}
+                onChange={setBoardsPerPack}
+              />
+
+              <NumberField
+                hint="Альтернатива предыдущему полю, если известна площадь одной упаковки"
+                label="Площадь упаковки"
+                unit="м²"
+                value={packAreaM2}
+                onChange={setPackAreaM2}
+              />
+            </FieldGroup>
           </>
         )}
         result={(
@@ -240,18 +257,18 @@ const LaminateCalculator = () => {
       />
 
       <CalculatorSection title="Как считает калькулятор">
-        <p>
+        <Typography.Paragraph>
           Площадь одной доски получается из длины и ширины в миллиметрах, переведённых в квадратные
           метры. Площадь помещения делится на площадь доски, к результату добавляется запас на
           подрезку — при диагональной укладке он выше из-за большего числа косых резов по краям
           комнаты.
-        </p>
+        </Typography.Paragraph>
 
-        <p>
+        <Typography.Paragraph>
           Подложка под ламинат — отдельный материал и в этом расчёте не учитывается, для неё
           достаточно взять площадь пола с небольшим запасом. Результат — количество материала для
           закупки, а не стоимость укладки: цены на работы смотрите в прайс-листе.
-        </p>
+        </Typography.Paragraph>
       </CalculatorSection>
 
       <Faq items={faqItems} />

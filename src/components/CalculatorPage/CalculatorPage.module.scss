@@ -2,7 +2,6 @@
   display: flex;
   flex-direction: column;
   gap: 32px;
-  text-shadow: 0 1px 0 rgb(255 255 255 / 50%);
 }
 
 .head {
@@ -13,11 +12,9 @@
 
 .title {
   margin: 0;
-  font-family: var(--font-ui);
 }
 
 .intro {
   margin: 0;
-  font-size: 16px;
   line-height: 1.5;
 }

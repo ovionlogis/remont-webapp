@@ -1,11 +1,25 @@
+import {
+  AirVent,
+  Droplet,
+  Flame,
+  HardHat,
+  Key,
+  Layers,
+  PaintRoller,
+  Scroll
+} from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
+
 export interface WorkService {
   title: string;
+  icon: LucideIcon;
   items: string[];
 }
 
 export const data: WorkService[] = [
   {
     title: 'Монтажные и демонтажные работы',
+    icon: HardHat,
     items: [
       'Стены и перегородки: пробивка дверных проемов, устройство ниш, кладка перегородок, разборка кирпичных и щитовых стен.',
       'Проемы: демонтаж и монтаж дверных оконных блоков, устройство откосов из пвх и дерева.',
@@ -15,6 +29,7 @@ export const data: WorkService[] = [
   },
   {
     title: 'Штукатурные работы',
+    icon: Layers,
     items: [
       'Оштукатуривание стен, откосов.',
       'Заделка штраб под электропроводку, трещин.'
@@ -22,6 +37,7 @@ export const data: WorkService[] = [
   },
   {
     title: 'Малярные работы',
+    icon: PaintRoller,
     items: [
       'Подготовка поверхностей под шпатлевку.',
       'Шпатлевка стен и потолков.',
@@ -32,6 +48,7 @@ export const data: WorkService[] = [
   },
   {
     title: 'Облицовочные работы',
+    icon: Scroll,
     items: [
       'Разборка облицовки стен из глазурованной плитки.',
       'Облицовка стен кафелем.',
@@ -42,6 +59,7 @@ export const data: WorkService[] = [
   },
   {
     title: 'Фурнитура',
+    icon: Key,
     items: [
       'Установка дверных замков и ручек.',
       'Навешивание гардин.',
@@ -50,6 +68,7 @@ export const data: WorkService[] = [
   },
   {
     title: 'Сантехнические работы',
+    icon: Droplet,
     items: [
       'Демонтажные работы.',
       'Прокладка труб водопровода и отопления.',
@@ -61,6 +80,7 @@ export const data: WorkService[] = [
   },
   {
     title: 'Отопление',
+    icon: Flame,
     items: [
       'Демонтаж конвекторов отопительных настенных.',
       'Установка радиаторов отопления.'
@@ -68,6 +88,7 @@ export const data: WorkService[] = [
   },
   {
     title: 'Вентиляция',
+    icon: AirVent,
     items: [
       'Прокладка воздуховодов.',
       'Установка вентиляционных решеток.',

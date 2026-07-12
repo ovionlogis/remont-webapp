@@ -1,14 +1,5 @@
 .field {
-  display: flex;
-  flex-direction: column;
   gap: 4px;
-}
-
-.label {
-  font-family: var(--font-ui);
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--color-dark);
 }
 
 .inputRow {
@@ -17,40 +8,8 @@
   gap: 8px;
 }
 
-.input {
-  width: 100%;
-  padding: 8px 10px;
-  font-family: var(--font-ui);
-  font-size: 16px;
-  color: var(--color-text);
-  background: var(--white);
-  border: 1px solid var(--color-border);
-  border-radius: 4px;
-
-  &:focus {
-    outline: none;
-    border-color: var(--color-accent);
-  }
-}
-
-.inputError {
-  border-color: #b3261e;
-}
-
 .unit {
   flex-shrink: 0;
-  font-family: var(--font-ui);
   font-size: 14px;
-  color: var(--color-dark);
-}
-
-.hint {
-  font-size: 13px;
-  color: var(--color-dark);
-  opacity: 0.8;
-}
-
-.error {
-  font-size: 13px;
-  color: #b3261e;
+  color: var(--muted);
 }

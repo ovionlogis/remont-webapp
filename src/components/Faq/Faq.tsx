@@ -1,3 +1,5 @@
+import { Accordion, Typography } from '@heroui/react';
+
 import styles from './Faq.module.scss';
 
 interface FaqItem {
@@ -11,24 +13,40 @@ interface FaqProps {
 
 const Faq = ({ items }: FaqProps) => (
   <div className={styles.faq}>
-    <h2 className={styles.title}>
+    <Typography.Heading
+      className={styles.title}
+      level={2}
+    >
       Частые вопросы
-    </h2>
+    </Typography.Heading>
 
-    {items.map((item) => (
-      <details
-        key={item.question}
-        className={styles.item}
-      >
-        <summary className={styles.question}>
-          {item.question}
-        </summary>
+    <Accordion
+      className={styles.accordion}
+      variant="surface"
+    >
+      {items.map((item) => (
+        <Accordion.Item
+          key={item.question}
+          className={styles.item}
+        >
+          <Accordion.Heading>
+            <Accordion.Trigger className={styles.question}>
+              {item.question}
 
-        <p className={styles.answer}>
-          {item.answer}
-        </p>
-      </details>
-    ))}
+              <Accordion.Indicator />
+            </Accordion.Trigger>
+          </Accordion.Heading>
+
+          <Accordion.Panel>
+            <Accordion.Body>
+              <Typography.Paragraph className={styles.answer}>
+                {item.answer}
+              </Typography.Paragraph>
+            </Accordion.Body>
+          </Accordion.Panel>
+        </Accordion.Item>
+      ))}
+    </Accordion>
   </div>
 );
 

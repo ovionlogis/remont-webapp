@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback } from 'react';
+import { Label, ToggleButton, ToggleButtonGroup } from '@heroui/react';
 
 import styles from './SegmentedControl.module.scss';
 
@@ -19,33 +20,38 @@ interface SegmentedControlProps {
 const SegmentedControl = ({
   label, value, onChange, options
 }: SegmentedControlProps) => {
-  const handleClick = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
-    const optionValue = event.currentTarget.dataset.value;
+  const handleSelectionChange = useCallback((keys: 'all' | Set<React.Key>) => {
+    if (keys === 'all') {
+      return;
+    }
 
-    if (optionValue !== undefined) {
-      onChange(optionValue);
+    const [first] = keys;
+
+    if (first !== undefined) {
+      onChange(String(first));
     }
   }, [onChange]);
 
   return (
     <div className={styles.field}>
-      <span className={styles.label}>
-        {label}
-      </span>
+      <Label>{label}</Label>
 
-      <div className={styles.segments}>
+      <ToggleButtonGroup
+        disallowEmptySelection
+        isDetached
+        selectedKeys={new Set([value])}
+        selectionMode="single"
+        onSelectionChange={handleSelectionChange}
+      >
         {options.map((option) => (
-          <button
+          <ToggleButton
             key={option.value}
-            className={option.value === value ? `${styles.segment} ${styles.segmentActive}` : styles.segment}
-            data-value={option.value}
-            type="button"
-            onClick={handleClick}
+            id={option.value}
           >
             {option.label}
-          </button>
+          </ToggleButton>
         ))}
-      </div>
+      </ToggleButtonGroup>
     </div>
   );
 };

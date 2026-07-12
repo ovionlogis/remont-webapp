@@ -1,27 +1,36 @@
 'use client';
 
 import { useCallback, useMemo, useState } from 'react';
+import { Typography } from '@heroui/react';
 
 import CalculatorGrid from '@/components/CalculatorGrid';
 import CalculatorPage from '@/components/CalculatorPage';
 import CalculatorSection from '@/components/CalculatorSection';
 import Disclaimer from '@/components/Disclaimer';
 import Faq from '@/components/Faq';
+import FieldGroup from '@/components/FieldGroup';
 import NumberField from '@/components/NumberField';
 import RelatedCalculators from '@/components/RelatedCalculators';
 import ResultCard from '@/components/ResultCard';
 import SegmentedControl from '@/components/SegmentedControl';
 import SelectField from '@/components/SelectField';
-import { formatNumber, isInRange, parseNumber } from '@/utils/calculator';
+import {
+  formatNumber, isInRange, parseNumber, pluralize
+} from '@/utils/calculator';
+import {
+  CENTIMETER_FORMAT, METER_FORMAT, PERCENT_FORMAT
+} from '@/utils/numberFieldFormats';
 
 import { faqItems } from './faqItems';
 
 const ROLL_WIDTH_PRESETS = [
   { value: '0.53', label: '0.53 м' },
   { value: '0.7', label: '0.7 м' },
-  { value: '1.0', label: '1.0 м' },
-  { value: '1.06', label: '1.06 м' }
+  { value: '1.06', label: '1.06 м' },
+  { value: 'custom', label: 'Своё значение' }
 ];
+
+const ROLL_UNIT_FORMS: [string, string, string] = ['рулон', 'рулона', 'рулонов'];
 
 const DOOR_WIDTH_M = 0.8;
 const WINDOW_WIDTH_M = 0.6;
@@ -35,12 +44,23 @@ const WallpaperCalculator = () => {
   const [widthM, setWidthM] = useState('3');
   const [perimeterM, setPerimeterM] = useState('14');
   const [heightM, setHeightM] = useState('2.7');
-  const [rollWidthM, setRollWidthM] = useState('1.0');
+  const [rollWidthPreset, setRollWidthPreset] = useState('1.06');
+  const [rollWidthM, setRollWidthM] = useState('1.06');
   const [rollLengthM, setRollLengthM] = useState('10.05');
   const [rapportCm, setRapportCm] = useState('0');
   const [doorCount, setDoorCount] = useState('1');
   const [windowCount, setWindowCount] = useState('1');
-  const [wastePercent, setWastePercent] = useState('0');
+  const [wastePercent, setWastePercent] = useState('5');
+
+  const handleRollWidthPresetChange = useCallback((value: string) => {
+    setRollWidthPreset(value);
+
+    const preset = ROLL_WIDTH_PRESETS.find((item) => item.value === value);
+
+    if (preset && preset.value !== 'custom') {
+      setRollWidthM(preset.value);
+    }
+  }, []);
 
   const handleRapportChange = useCallback((value: string) => {
     setRapportCm(value);
@@ -48,7 +68,7 @@ const WallpaperCalculator = () => {
     const rapportNum = parseNumber(value);
 
     if (rapportNum !== null) {
-      setWastePercent(rapportNum > 0 ? '10' : '0');
+      setWastePercent(rapportNum > 0 ? '10' : '5');
     }
   }, []);
 
@@ -104,11 +124,15 @@ const WallpaperCalculator = () => {
     };
   }, [perimeterMode, lengthM, widthM, perimeterM, heightM, rollWidthM, rollLengthM, rapportCm, doorCount, windowCount, wastePercent]);
 
+  const rapportValue = parseNumber(rapportCm);
+
   const metrics = result ? [
     { label: 'Полос нужно', value: `${result.stripsNeeded} шт.` },
     { label: 'Полос из рулона', value: `${result.stripsPerRoll} шт.` },
     { label: 'Площадь стен', value: `${formatNumber(result.wallAreaM2)} м²` },
-    { label: 'Запас на подгонку', value: `${result.waste}%` }
+    { label: 'Запас на подгонку', value: `${result.waste}%` },
+    { label: 'Размер рулона', value: `${rollWidthM} × ${rollLengthM} м` },
+    { label: 'Раппорт', value: rapportValue !== null && rapportValue > 0 ? `${rapportCm} см` : 'без подгонки' }
   ] : [];
 
   return (
@@ -119,89 +143,104 @@ const WallpaperCalculator = () => {
       <CalculatorGrid
         fields={(
           <>
-            <SegmentedControl
-              label="Как ввести периметр"
-              options={[
-                { value: 'dimensions', label: 'Длина × ширина' },
-                { value: 'perimeter', label: 'Периметр напрямую' }
-              ]}
-              value={perimeterMode}
-              onChange={setPerimeterMode}
-            />
-
-            {perimeterMode === 'dimensions' ? (
-              <>
-                <NumberField
-                  label="Длина помещения"
-                  unit="м"
-                  value={lengthM}
-                  onChange={setLengthM}
-                />
-                <NumberField
-                  label="Ширина помещения"
-                  unit="м"
-                  value={widthM}
-                  onChange={setWidthM}
-                />
-              </>
-            ) : (
-              <NumberField
-                label="Периметр помещения"
-                unit="м"
-                value={perimeterM}
-                onChange={setPerimeterM}
+            <FieldGroup title="Помещение">
+              <SegmentedControl
+                label="Как ввести периметр"
+                options={[
+                  { value: 'dimensions', label: 'Длина × ширина' },
+                  { value: 'perimeter', label: 'Периметр напрямую' }
+                ]}
+                value={perimeterMode}
+                onChange={setPerimeterMode}
               />
-            )}
 
-            <NumberField
-              label="Высота потолков"
-              unit="м"
-              value={heightM}
-              onChange={setHeightM}
-            />
+              {perimeterMode === 'dimensions' ? (
+                <>
+                  <NumberField
+                    formatOptions={METER_FORMAT}
+                    label="Длина помещения"
+                    value={lengthM}
+                    onChange={setLengthM}
+                  />
+                  <NumberField
+                    formatOptions={METER_FORMAT}
+                    label="Ширина помещения"
+                    value={widthM}
+                    onChange={setWidthM}
+                  />
+                </>
+              ) : (
+                <NumberField
+                  formatOptions={METER_FORMAT}
+                  label="Периметр помещения"
+                  value={perimeterM}
+                  onChange={setPerimeterM}
+                />
+              )}
 
-            <SelectField
-              label="Ширина рулона"
-              options={ROLL_WIDTH_PRESETS}
-              value={rollWidthM}
-              onChange={setRollWidthM}
-            />
+              <NumberField
+                formatOptions={METER_FORMAT}
+                label="Высота потолков"
+                value={heightM}
+                onChange={setHeightM}
+              />
+            </FieldGroup>
 
-            <NumberField
-              label="Длина рулона"
-              unit="м"
-              value={rollLengthM}
-              onChange={setRollLengthM}
-            />
+            <FieldGroup title="Рулон обоев">
+              <SelectField
+                label="Ширина рулона"
+                options={ROLL_WIDTH_PRESETS}
+                value={rollWidthPreset}
+                onChange={handleRollWidthPresetChange}
+              />
 
-            <NumberField
-              hint="0 — обои без подгонки рисунка"
-              label="Раппорт рисунка"
-              unit="см"
-              value={rapportCm}
-              onChange={handleRapportChange}
-            />
+              {rollWidthPreset === 'custom' && (
+                <NumberField
+                  formatOptions={METER_FORMAT}
+                  label="Ширина рулона"
+                  value={rollWidthM}
+                  onChange={setRollWidthM}
+                />
+              )}
 
-            <NumberField
-              label="Дверных проёмов"
-              unit="шт."
-              value={doorCount}
-              onChange={setDoorCount}
-            />
-            <NumberField
-              label="Оконных проёмов"
-              unit="шт."
-              value={windowCount}
-              onChange={setWindowCount}
-            />
+              <NumberField
+                formatOptions={METER_FORMAT}
+                label="Длина рулона"
+                value={rollLengthM}
+                onChange={setRollLengthM}
+              />
 
-            <NumberField
-              hint="Авторасчёт по раппорту, можно изменить вручную"
-              label="Запас на подгонку"
-              unit="%"
-              value={wastePercent}
-              onChange={setWastePercent}
-            />
+              <NumberField
+                formatOptions={CENTIMETER_FORMAT}
+                hint="0 — обои без подгонки рисунка"
+                label="Раппорт рисунка"
+                value={rapportCm}
+                onChange={handleRapportChange}
+              />
+            </FieldGroup>
+
+            <FieldGroup title="Проёмы и запас">
+              <NumberField
+                label="Дверных проёмов"
+                unit="шт."
+                value={doorCount}
+                onChange={setDoorCount}
+              />
+              <NumberField
+                label="Оконных проёмов"
+                unit="шт."
+                value={windowCount}
+                onChange={setWindowCount}
+              />
+
+              <NumberField
+                formatOptions={PERCENT_FORMAT}
+                hint="Авторасчёт по раппорту, можно изменить вручную"
+                label="Запас на подгонку"
+                value={wastePercent}
+                onChange={setWastePercent}
+              />
+            </FieldGroup>
           </>
         )}
         result={(
@@ -211,25 +250,25 @@ const WallpaperCalculator = () => {
             invalidMessage="Укажите размеры комнаты, высоту потолков и параметры рулона"
             metrics={metrics}
             note="Обои клеятся целыми полосами по периметру — остаток по высоте от последнего рулона идёт в отход."
-            value={result ? `${result.rollsNeeded} рулон(ов)` : undefined}
+            value={result ? `${result.rollsNeeded} ${pluralize(result.rollsNeeded, ROLL_UNIT_FORMS)}` : undefined}
           />
         )}
       />
 
       <CalculatorSection title="Как считает калькулятор">
-        <p>
+        <Typography.Paragraph>
           Расчёт идёт полосами, а не делением площади на площадь рулона: высота одной полосы — это
           высота потолков плюс запас на подрезку сверху и снизу, а при наличии раппорта высота
           округляется вверх до величины, кратной раппорту. Из длины рулона получается целое число
           полос, а из периметра — необходимое число полос по ширине рулона.
-        </p>
+        </Typography.Paragraph>
 
-        <p>
+        <Typography.Paragraph>
           Дверные и оконные проёмы уменьшают периметр не пропорционально своей площади — кусок обоев
           над дверью часто всё равно идёт в отход, поэтому вычитается только часть ширины проёма.
           Итоговое число рулонов — ориентир для закупки, стоимость самой поклейки смотрите в
           прайс-листе.
-        </p>
+        </Typography.Paragraph>
       </CalculatorSection>
 
       <Faq items={faqItems} />

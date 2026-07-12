@@ -1,5 +1,6 @@
-import Link from 'next/link';
+import { Typography } from '@heroui/react';
 
+import CalculatorCard from '@/components/CalculatorCard';
 import { calculatorTools } from '@/content/calculators/data';
 
 import styles from './RelatedCalculators.module.scss';
@@ -21,23 +22,17 @@ const RelatedCalculators = ({ slugs }: RelatedCalculatorsProps) => {
 
   return (
     <div className={styles.related}>
-      <h2 className={styles.title}>
+      <Typography.Heading
+        className={styles.title}
+        level={2}
+      >
         Похожие калькуляторы
-      </h2>
+      </Typography.Heading>
 
       <ul className={styles.list}>
         {tools.map((tool) => (
           <li key={tool.slug}>
-            <Link
-              className={styles.link}
-              href={`/calculators/${tool.slug}`}
-            >
-              {tool.title}
-            </Link>
-
-            <span className={styles.description}>
-              {tool.description}
-            </span>
+            <CalculatorCard tool={tool} />
           </li>
         ))}
       </ul>

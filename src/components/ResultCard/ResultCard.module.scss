@@ -1,25 +1,21 @@
 .card {
   padding: 20px;
-  background: rgb(224 148 2 / 10%);
-  border-left: 3px solid var(--color-accent);
-  border-radius: 4px;
+  background: color-mix(in oklch, var(--accent) 10%, transparent);
+  border-left: 3px solid var(--accent);
 }
 
 .heading {
   display: block;
-  font-family: var(--font-ui);
-  font-size: 15px;
-  color: var(--color-dark);
+  color: var(--muted);
 }
 
 .value {
-  display: block;
   margin: 4px 0 12px;
-  font-family: var(--font-ui);
+  display: block;
   font-size: 32px;
   font-weight: 700;
   line-height: 1.1;
-  color: var(--color-text);
+  color: var(--foreground);
 }
 
 .metrics {
@@ -31,12 +27,11 @@
     display: flex;
     justify-content: space-between;
     gap: 12px;
-    font-size: 14px;
   }
 }
 
 .metricLabel {
-  color: var(--color-dark);
+  color: var(--muted);
 }
 
 .metricValue {
@@ -48,11 +43,10 @@
   margin: 12px 0 0;
   font-size: 13px;
   line-height: 1.5;
-  color: var(--color-dark);
+  color: var(--muted);
 }
 
 .invalid {
   margin: 0;
-  font-size: 14px;
-  color: var(--color-dark);
+  color: var(--muted);
 }

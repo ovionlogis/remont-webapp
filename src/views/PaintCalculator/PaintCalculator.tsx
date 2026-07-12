@@ -1,18 +1,21 @@
 'use client';
 
 import { useCallback, useMemo, useState } from 'react';
+import { Typography } from '@heroui/react';
 
 import CalculatorGrid from '@/components/CalculatorGrid';
 import CalculatorPage from '@/components/CalculatorPage';
 import CalculatorSection from '@/components/CalculatorSection';
 import Disclaimer from '@/components/Disclaimer';
 import Faq from '@/components/Faq';
+import FieldGroup from '@/components/FieldGroup';
 import NumberField from '@/components/NumberField';
 import RelatedCalculators from '@/components/RelatedCalculators';
 import ResultCard from '@/components/ResultCard';
 import SegmentedControl from '@/components/SegmentedControl';
 import SelectField from '@/components/SelectField';
 import { formatNumber, isInRange, parseNumber } from '@/utils/calculator';
+import { LITER_FORMAT, METER_FORMAT, PERCENT_FORMAT } from '@/utils/numberFieldFormats';
 
 import { faqItems } from './faqItems';
 
@@ -92,7 +95,9 @@ const PaintCalculator = () => {
   const metrics = result ? [
     { label: 'Площадь окрашивания', value: `${formatNumber(result.area)} м²` },
     { label: 'Применённая норма', value: `${formatNumber(result.rate, 3)} л/м²/слой${result.isOverride ? ' (ваша)' : ' (типовая)'}` },
-    ...(result.cans !== null ? [{ label: 'Банок', value: `${result.cans} шт.` }] : [])
+    ...(result.cans !== null ? [{ label: 'Банок', value: `${result.cans} шт.` }] : []),
+    { label: 'Тип краски', value: PAINT_TYPES.find((type) => type.value === paintType)?.label.replace(/\s*\(.*\)$/, '') ?? '' },
+    { label: 'Слоёв', value: `${layers} шт.` }
   ] : [];
 
   return (
@@ -103,88 +108,96 @@ const PaintCalculator = () => {
       <CalculatorGrid
         fields={(
           <>
-            <SegmentedControl
-              label="Как ввести площадь"
-              options={[
-                { value: 'area', label: 'Площадь напрямую' },
-                { value: 'walls', label: 'Периметр × высота' }
-              ]}
-              value={areaMode}
-              onChange={setAreaMode}
-            />
-
-            {areaMode === 'area' ? (
-              <NumberField
-                label="Площадь окрашивания"
-                unit="м²"
-                value={areaM2}
-                onChange={setAreaM2}
+            <FieldGroup title="Площадь окрашивания">
+              <SegmentedControl
+                label="Как ввести площадь"
+                options={[
+                  { value: 'area', label: 'Площадь напрямую' },
+                  { value: 'walls', label: 'Периметр × высота' }
+                ]}
+                value={areaMode}
+                onChange={setAreaMode}
               />
-            ) : (
-              <>
+
+              {areaMode === 'area' ? (
                 <NumberField
-                  label="Периметр помещения"
-                  unit="м"
-                  value={perimeterM}
-                  onChange={setPerimeterM}
-                />
-                <NumberField
-                  label="Высота стен"
-                  unit="м"
-                  value={heightM}
-                  onChange={setHeightM}
-                />
-                <NumberField
-                  hint="Двери, окна и другие зоны без покраски"
-                  label="Площадь проёмов"
+                  label="Площадь окрашивания"
                   unit="м²"
-                  value={openingsM2}
-                  onChange={setOpeningsM2}
+                  value={areaM2}
+                  onChange={setAreaM2}
                 />
-              </>
-            )}
+              ) : (
+                <>
+                  <NumberField
+                    formatOptions={METER_FORMAT}
+                    label="Периметр помещения"
+                    value={perimeterM}
+                    onChange={setPerimeterM}
+                  />
+                  <NumberField
+                    formatOptions={METER_FORMAT}
+                    label="Высота стен"
+                    value={heightM}
+                    onChange={setHeightM}
+                  />
+                  <NumberField
+                    hint="Двери, окна и другие зоны без покраски"
+                    label="Площадь проёмов"
+                    unit="м²"
+                    value={openingsM2}
+                    onChange={setOpeningsM2}
+                  />
+                </>
+              )}
+            </FieldGroup>
 
-            <SelectField
-              label="Тип краски / поверхности"
-              options={PAINT_TYPES.map((type) => ({ value: type.value, label: type.label }))}
-              value={paintType}
-              onChange={setPaintType}
-            />
+            <FieldGroup title="Краска">
+              <SelectField
+                label="Тип краски / поверхности"
+                options={PAINT_TYPES.map((type) => ({ value: type.value, label: type.label }))}
+                value={paintType}
+                onChange={setPaintType}
+              />
 
-            <NumberField
-              hint="Заполните расход с банки конкретной краски — он приоритетнее типового значения"
-              label="Расход по банке (переопределение)"
-              unit="л/м²/слой"
-              value={rateOverride}
-              onChange={setRateOverride}
-            />
+              <NumberField
+                hint="Заполните расход с банки конкретной краски — он приоритетнее типового значения"
+                label="Расход по банке (переопределение)"
+                unit="л/м²/слой"
+                value={rateOverride}
+                onChange={setRateOverride}
+              />
+            </FieldGroup>
 
-            <NumberField
-              label="Количество слоёв"
-              unit="шт."
-              value={layers}
-              onChange={setLayers}
-            />
-            <NumberField
-              label="Запас"
-              unit="%"
-              value={wastePercent}
-              onChange={setWastePercent}
-            />
+            <FieldGroup title="Слои и запас">
+              <NumberField
+                label="Количество слоёв"
+                unit="шт."
+                value={layers}
+                onChange={setLayers}
+              />
+              <NumberField
+                formatOptions={PERCENT_FORMAT}
+                label="Запас"
+                value={wastePercent}
+                onChange={setWastePercent}
+              />
+            </FieldGroup>
 
-            <SelectField
-              label="Объём тары"
-              options={CAN_VOLUME_PRESETS}
-              value={canVolumePreset}
-              onChange={handleCanPresetChange}
-            />
+            <FieldGroup title="Тара">
+              <SelectField
+                label="Объём тары"
+                options={CAN_VOLUME_PRESETS}
+                value={canVolumePreset}
+                onChange={handleCanPresetChange}
+              />
 
-            <NumberField
-              label="Объём тары"
-              unit="л"
-              value={canVolumeL}
-              onChange={setCanVolumeL}
-            />
+              <NumberField
+                formatOptions={LITER_FORMAT}
+                label="Объём тары"
+                value={canVolumeL}
+                onChange={setCanVolumeL}
+              />
+            </FieldGroup>
           </>
         )}
         result={(
@@ -200,18 +213,18 @@ const PaintCalculator = () => {
       />
 
       <CalculatorSection title="Как считает калькулятор">
-        <p>
+        <Typography.Paragraph>
           Расход за один слой — площадь окрашивания, умноженная на норму расхода конкретного типа
           краски. Итог умножается на количество слоёв и увеличивается на процент запаса. Второй слой
           не удваивает расход линейно: краска частично впитывается в уже прокрашенную поверхность,
           но для закупки безопаснее считать по полной норме на каждый слой.
-        </p>
+        </Typography.Paragraph>
 
-        <p>
+        <Typography.Paragraph>
           Расход краски всегда указан производителем для конкретного основания и меняется в
           зависимости от его пористости и шероховатости — это ориентировочная величина, а не точная
           физическая константа. Итог расчёта — объём закупки материала, а не бюджет малярных работ.
-        </p>
+        </Typography.Paragraph>
       </CalculatorSection>
 
       <Faq items={faqItems} />

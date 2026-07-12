@@ -1,3 +1,5 @@
+import { Typography } from '@heroui/react';
+
 import styles from './ResultCard.module.scss';
 
 interface ResultMetric {
@@ -24,9 +26,9 @@ const ResultCard = ({
 }: ResultCardProps) => (
   <div className={styles.card}>
     {invalid ? (
-      <p className={styles.invalid}>
+      <Typography.Paragraph className={styles.invalid}>
         {invalidMessage}
-      </p>
+      </Typography.Paragraph>
     ) : (
       <>
         <span className={styles.heading}>
@@ -54,9 +56,9 @@ const ResultCard = ({
         ) : null}
 
         {note ? (
-          <p className={styles.note}>
+          <Typography.Paragraph className={styles.note}>
             {note}
-          </p>
+          </Typography.Paragraph>
         ) : null}
       </>
     )}

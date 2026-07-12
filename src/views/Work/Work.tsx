@@ -1,3 +1,4 @@
+import { Typography } from '@heroui/react';
 import Link from 'next/link';
 
 import { data } from '@/content/works/data';
@@ -6,16 +7,34 @@ import styles from './Work.module.scss';
 
 const Work = () => (
   <div className={styles.content}>
-    <h1 className={styles.head}>
+    <Typography.Heading
+      className={styles.head}
+      level={1}
+    >
       Отделочные работы
-    </h1>
+    </Typography.Heading>
 
     <ol className={styles.list}>
-      {data.map((service) => (
+      {data.map((service, index) => (
         <li key={service.title}>
-          <h2 className={styles.categoryTitle}>
-            {service.title}
-          </h2>
+          <div className={styles.categoryHead}>
+            <span className={styles.index}>
+              {index + 1}
+              .
+            </span>
+
+            <service.icon
+              aria-hidden
+              className={styles.categoryIcon}
+            />
+
+            <Typography.Heading
+              className={styles.categoryTitle}
+              level={2}
+            >
+              {service.title}
+            </Typography.Heading>
+          </div>
 
           <ul>
             {service.items.map((item) => (
@@ -28,14 +47,14 @@ const Work = () => (
       ))}
     </ol>
 
-    <p className={styles.priceLink}>
+    <Typography.Paragraph className={styles.priceLink}>
       Стоимость этих работ смотрите в
       {' '}
       <Link href="/price">
         прайс-листе
       </Link>
       .
-    </p>
+    </Typography.Paragraph>
   </div>
 );
 

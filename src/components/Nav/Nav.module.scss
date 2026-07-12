@@ -1,52 +1,141 @@
 .nav {
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  padding: 0 30px;
-  font-family: var(--font-ui);
-  font-size: 20px;
-  font-weight: 700;
-  background: var(--color-accent);
-
-  @include only-phone {
-    padding: 0;
-    font-size: 18px;
-  }
+  display: flex;
+  align-items: center;
 }
 
 .list {
   display: flex;
+  gap: 28px;
 
   @include only-phone {
-    flex-direction: column;
+    display: none;
   }
 
   li {
-    &:hover a,
-    &.active a {
-      text-shadow: 0 2px 0 #444;
-      background: var(--color-dark);
+    position: relative;
+
+    &::after {
+      position: absolute;
+      right: 0;
+      bottom: -4px;
+      left: 0;
+      height: 2px;
+      content: '';
+      background: var(--accent);
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    &:hover::after,
+    &.active::after {
+      opacity: 1;
     }
   }
 
   a {
-    display: block;
-    padding: 15px 40px;
+    font-size: 15px;
+    font-weight: 700;
     text-decoration: none;
-    text-shadow: 0 2px 0 #c68301;
-    color: var(--color-bg);
+    color: var(--foreground);
+    transition: color 0.2s ease;
+  }
 
-    @include only-phone {
-      padding: 10px 20px;
-      text-align: center;
-    }
+  li:hover a,
+  li.active a {
+    color: var(--accent);
   }
 }
 
-.price {
-  margin-left: auto;
+.trigger {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  color: var(--foreground);
+  background: none;
+  border: none;
+  cursor: pointer;
 
   @include only-phone {
-    margin-left: 0;
+    display: flex;
+  }
+
+  &:hover {
+    color: var(--accent);
+  }
+}
+
+.drawerLogo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.drawerLogoImage {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+}
+
+.drawerBrandName {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.drawerList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    &:hover a,
+    &.active a {
+      color: var(--background);
+      background: var(--accent);
+    }
+  }
+
+  a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    font-size: 15px;
+    font-weight: 700;
+    text-decoration: none;
+    color: var(--foreground);
+    border-radius: 12px;
+    transition: color 0.2s ease, background 0.2s ease;
+  }
+}
+
+.drawerSeparator {
+  margin: 16px 0;
+}
+
+.drawerPhones {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 0 14px;
+
+  a {
+    font-size: 18px;
+    font-weight: 700;
+    text-decoration: none;
+    color: var(--foreground);
+
+    &:hover {
+      opacity: 0.8;
+    }
   }
 }

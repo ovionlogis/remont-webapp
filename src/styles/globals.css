@@ -1,17 +1,52 @@
-:root {
-  --black: #000;
-  --white: #fff;
-  --color-bg: #dedad3;
-  --color-bg-page: #9a5321;
-  --color-text: #6b3b25;
-  --color-accent: #e09402;
-  --color-accent-light: #f6a201;
-  --color-dark: #62493d;
-  --color-footer-text: #e7d7ba;
-  --color-border: #c6c2bc;
-  --font-body: var(--font-arvo, 'Arvo', sans-serif);
-  --font-ui: var(--font-lato, 'Lato', sans-serif);
-  --wrapper-width: 1024px;
+@import "tailwindcss";
+@import "@heroui/styles";
+
+:root,
+.light,
+.default,
+[data-theme="light"],
+[data-theme="default"] {
+  /* Theme Colors (Light Mode) */
+  --accent: oklch(72.53% 0.1544 72.72deg);
+  --accent-foreground: oklch(15% 0.0300 72.72deg);
+  --background: oklch(97.02% 0.0015 72.72deg);
+  --border: oklch(90.00% 0.0015 72.72deg);
+  --danger: oklch(65.32% 0.2335 4.01deg);
+  --danger-foreground: oklch(99.11% 0 0deg);
+  --default: oklch(94.00% 0.0015 72.72deg);
+  --default-foreground: oklch(21.03% 0.0059 72.72deg);
+  --field-background: oklch(100.00% 0.0008 72.72deg);
+  --field-border: transparent;
+  --field-foreground: oklch(21.03% 0.0015 72.72deg);
+  --field-placeholder: oklch(55.17% 0.0030 72.72deg);
+  --focus: oklch(72.53% 0.1544 72.72deg);
+  --foreground: oklch(40.68% 0.0759 44.69deg);
+  --muted: oklch(55.17% 0.0030 72.72deg);
+  --overlay: oklch(100.00% 0.0004 72.72deg);
+  --overlay-foreground: oklch(21.03% 0.0015 72.72deg);
+  --scrollbar: oklch(87.10% 0.0015 72.72deg);
+  --segment: oklch(100.00% 0.0015 72.72deg);
+  --segment-foreground: oklch(21.03% 0.0015 72.72deg);
+  --separator: oklch(92.00% 0.0015 72.72deg);
+  --success: oklch(73.29% 0.1941 129.08deg);
+  --success-foreground: oklch(21.03% 0.0059 129.08deg);
+  --surface: oklch(100.00% 0.0008 72.72deg);
+  --surface-foreground: oklch(21.03% 0.0015 72.72deg);
+  --surface-secondary: oklch(95.24% 0.0012 72.72deg);
+  --surface-secondary-foreground: oklch(21.03% 0.0015 72.72deg);
+  --surface-tertiary: oklch(93.73% 0.0012 72.72deg);
+  --surface-tertiary-foreground: oklch(21.03% 0.0015 72.72deg);
+  --warning: oklch(78.19% 0.1590 50.60deg);
+  --warning-foreground: oklch(21.03% 0.0059 50.60deg);
+
+  /* Border Radius */
+  --radius: 0;
+  --field-radius: 0;
+
+  /* Font Family */
+
+  /* Make sure to load font in your app */
+  --font-sans: var(--font-lato);
 }
 
 *,
@@ -35,12 +70,8 @@ p {
 
 body {
   margin: 0;
-  padding: 30px 0 80px;
-  font-family: var(--font-body);
-  font-size: 18px;
-  line-height: 1.5em;
-  color: var(--color-text);
-  background-color: var(--color-bg-page);
+  padding: 30px 0;
+  font-family: var(--font-sans);
   background-image: url('./bg.png');
   background-position: 50% 0;
   -webkit-font-smoothing: antialiased;

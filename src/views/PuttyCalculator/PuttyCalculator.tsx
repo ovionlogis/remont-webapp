@@ -1,18 +1,23 @@
 'use client';
 
 import { useCallback, useMemo, useState } from 'react';
+import { Typography } from '@heroui/react';
 
 import CalculatorGrid from '@/components/CalculatorGrid';
 import CalculatorPage from '@/components/CalculatorPage';
 import CalculatorSection from '@/components/CalculatorSection';
 import Disclaimer from '@/components/Disclaimer';
 import Faq from '@/components/Faq';
+import FieldGroup from '@/components/FieldGroup';
 import NumberField from '@/components/NumberField';
 import RelatedCalculators from '@/components/RelatedCalculators';
 import ResultCard from '@/components/ResultCard';
 import SegmentedControl from '@/components/SegmentedControl';
 import SelectField from '@/components/SelectField';
 import { formatNumber, isInRange, parseNumber } from '@/utils/calculator';
+import {
+  KILOGRAM_FORMAT, METER_FORMAT, MILLIMETER_FORMAT, PERCENT_FORMAT
+} from '@/utils/numberFieldFormats';
 
 import { faqItems } from './faqItems';
 
@@ -93,7 +98,10 @@ const PuttyCalculator = () => {
   const metrics = result ? [
     { label: 'Площадь поверхности', value: `${formatNumber(result.area)} м²` },
     { label: 'Применённая норма', value: `${formatNumber(result.rate)} кг/м²/мм${result.isOverride ? ' (ваша)' : ' (типовая)'}` },
-    ...(result.bags !== null ? [{ label: 'Мешков', value: `${result.bags} шт.` }] : [])
+    ...(result.bags !== null ? [{ label: 'Мешков', value: `${result.bags} шт.` }] : []),
+    { label: 'Тип шпаклёвки', value: PUTTY_TYPES.find((type) => type.value === puttyType)?.label.replace(/\s*\(.*\)$/, '') ?? '' },
+    { label: 'Толщина слоя', value: `${thicknessMm} мм` },
+    { label: 'Слоёв', value: `${layers} шт.` }
   ] : [];
 
   return (
@@ -104,95 +112,103 @@ const PuttyCalculator = () => {
       <CalculatorGrid
         fields={(
           <>
-            <SegmentedControl
-              label="Как ввести площадь"
-              options={[
-                { value: 'area', label: 'Площадь напрямую' },
-                { value: 'walls', label: 'Периметр × высота' }
-              ]}
-              value={areaMode}
-              onChange={setAreaMode}
-            />
-
-            {areaMode === 'area' ? (
-              <NumberField
-                label="Площадь поверхности"
-                unit="м²"
-                value={areaM2}
-                onChange={setAreaM2}
+            <FieldGroup title="Площадь поверхности">
+              <SegmentedControl
+                label="Как ввести площадь"
+                options={[
+                  { value: 'area', label: 'Площадь напрямую' },
+                  { value: 'walls', label: 'Периметр × высота' }
+                ]}
+                value={areaMode}
+                onChange={setAreaMode}
               />
-            ) : (
-              <>
+
+              {areaMode === 'area' ? (
                 <NumberField
-                  label="Периметр помещения"
-                  unit="м"
-                  value={perimeterM}
-                  onChange={setPerimeterM}
-                />
-                <NumberField
-                  label="Высота стен"
-                  unit="м"
-                  value={heightM}
-                  onChange={setHeightM}
-                />
-                <NumberField
-                  hint="Двери, окна и другие зоны без шпаклёвки"
-                  label="Площадь проёмов"
+                  label="Площадь поверхности"
                   unit="м²"
-                  value={openingsM2}
-                  onChange={setOpeningsM2}
+                  value={areaM2}
+                  onChange={setAreaM2}
                 />
-              </>
-            )}
+              ) : (
+                <>
+                  <NumberField
+                    formatOptions={METER_FORMAT}
+                    label="Периметр помещения"
+                    value={perimeterM}
+                    onChange={setPerimeterM}
+                  />
+                  <NumberField
+                    formatOptions={METER_FORMAT}
+                    label="Высота стен"
+                    value={heightM}
+                    onChange={setHeightM}
+                  />
+                  <NumberField
+                    hint="Двери, окна и другие зоны без шпаклёвки"
+                    label="Площадь проёмов"
+                    unit="м²"
+                    value={openingsM2}
+                    onChange={setOpeningsM2}
+                  />
+                </>
+              )}
+            </FieldGroup>
 
-            <NumberField
-              label="Толщина слоя"
-              unit="мм"
-              value={thicknessMm}
-              onChange={setThicknessMm}
-            />
+            <FieldGroup title="Шпаклёвка">
+              <SelectField
+                label="Тип шпаклёвки"
+                options={PUTTY_TYPES.map((type) => ({ value: type.value, label: type.label }))}
+                value={puttyType}
+                onChange={setPuttyType}
+              />
 
-            <SelectField
-              label="Тип шпаклёвки"
-              options={PUTTY_TYPES.map((type) => ({ value: type.value, label: type.label }))}
-              value={puttyType}
-              onChange={setPuttyType}
-            />
+              <NumberField
+                hint="Заполните расход с этикетки конкретной упаковки — он приоритетнее типового значения"
+                label="Расход по этикетке (переопределение)"
+                unit="кг/м²/мм"
+                value={rateOverride}
+                onChange={setRateOverride}
+              />
 
-            <NumberField
-              hint="Заполните расход с этикетки конкретной упаковки — он приоритетнее типового значения"
-              label="Расход по этикетке (переопределение)"
-              unit="кг/м²/мм"
-              value={rateOverride}
-              onChange={setRateOverride}
-            />
+              <NumberField
+                formatOptions={MILLIMETER_FORMAT}
+                label="Толщина слоя"
+                value={thicknessMm}
+                onChange={setThicknessMm}
+              />
+            </FieldGroup>
 
-            <NumberField
-              label="Количество слоёв"
-              unit="шт."
-              value={layers}
-              onChange={setLayers}
-            />
-            <NumberField
-              label="Запас"
-              unit="%"
-              value={wastePercent}
-              onChange={setWastePercent}
-            />
+            <FieldGroup title="Слои и запас">
+              <NumberField
+                label="Количество слоёв"
+                unit="шт."
+                value={layers}
+                onChange={setLayers}
+              />
+              <NumberField
+                formatOptions={PERCENT_FORMAT}
+                label="Запас"
+                value={wastePercent}
+                onChange={setWastePercent}
+              />
+            </FieldGroup>
 
-            <SelectField
-              label="Вес мешка"
-              options={BAG_WEIGHT_PRESETS}
-              value={bagWeightPreset}
-              onChange={handleBagPresetChange}
-            />
+            <FieldGroup title="Упаковка">
+              <SelectField
+                label="Вес мешка"
+                options={BAG_WEIGHT_PRESETS}
+                value={bagWeightPreset}
+                onChange={handleBagPresetChange}
+              />
 
-            <NumberField
-              label="Вес мешка"
-              unit="кг"
-              value={bagWeightKg}
-              onChange={setBagWeightKg}
-            />
+              <NumberField
+                formatOptions={KILOGRAM_FORMAT}
+                label="Вес мешка"
+                value={bagWeightKg}
+                onChange={setBagWeightKg}
+              />
+            </FieldGroup>
           </>
         )}
         result={(
@@ -208,19 +224,19 @@ const PuttyCalculator = () => {
       />
 
       <CalculatorSection title="Как считает калькулятор">
-        <p>
+        <Typography.Paragraph>
           Расход за один слой — это площадь поверхности, умноженная на толщину слоя в миллиметрах и
           норму расхода на 1 мм. Итог умножается на количество слоёв и увеличивается на процент
           запаса. Стартовая и финишная шпаклёвка обычно кладутся разной толщиной и имеют разный
           расход — если применяете оба материала, посчитайте их отдельно.
-        </p>
+        </Typography.Paragraph>
 
-        <p>
+        <Typography.Paragraph>
           Норма расхода жёстко зависит от конкретного производителя: калькулятор даёт типовые
           ориентиры по категории материала, но точный расход всегда указан на упаковке купленного
           товара — используйте поле переопределения для точного результата. Итог — объём закупки
           материала, а не расход времени или денег на работу.
-        </p>
+        </Typography.Paragraph>
       </CalculatorSection>
 
       <Faq items={faqItems} />

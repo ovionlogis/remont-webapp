@@ -1,7 +1,10 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { Typography } from '@heroui/react';
 
+import ButtonLink from '@/components/ButtonLink';
+import Disclaimer from '@/components/Disclaimer';
 import { PRICE_UPDATED_AT, prices } from '@/content/prices/data';
 
 import styles from './Price.module.scss';
@@ -42,30 +45,32 @@ const Price = () => {
   return (
     <div className={styles.content}>
       <div className={styles.head}>
-        <h1 className={styles.title}>
+        <Typography.Heading
+          className={styles.title}
+          level={1}
+        >
           Прайс-лист
-        </h1>
+        </Typography.Heading>
 
-        <a
-          className={styles.download}
+        <ButtonLink
           download
           href="/price.pdf"
         >
           Скачать PDF
-        </a>
+        </ButtonLink>
       </div>
 
-      <p className={styles.updated}>
+      <Typography.Paragraph className={styles.updated}>
         Прайс обновлён: <time dateTime={PRICE_UPDATED_AT.iso}>{PRICE_UPDATED_AT.label}</time>
-      </p>
+      </Typography.Paragraph>
 
-      <p className={styles.disclaimer}>
+      <Disclaimer className={styles.disclaimer}>
         Цены в прайсе ориентировочные и не являются публичной офертой.
         Итоговая стоимость определяется индивидуально после оценки объекта и может отличаться
         от цен в прайсе в зависимости от сложности, объёма и особенностей работ.
         Чтобы получить точный расчёт и оформить заказ, позвоните нам по телефону{' '}
         <a href="tel:+79139551249">8 (913) 955-12-49</a>.
-      </p>
+      </Disclaimer>
 
       <div className={styles.layout}>
         <div>
@@ -76,11 +81,14 @@ const Price = () => {
               data-section-index={index}
               className={styles.section}
             >
-              <h2 className={styles.category}>
+              <Typography.Heading
+                className={styles.category}
+                level={2}
+              >
                 <span className={styles.categoryNum}>{index + 1}.</span>
                 {' '}
                 {category.name}
-              </h2>
+              </Typography.Heading>
 
               <table className={styles.table}>
                 <tbody>

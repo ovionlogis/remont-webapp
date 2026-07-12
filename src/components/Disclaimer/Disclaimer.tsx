@@ -1,13 +1,16 @@
+import { cn, Typography } from '@heroui/react';
+
 import styles from './Disclaimer.module.scss';
 
 interface DisclaimerProps {
+  className?: string;
   children: React.ReactNode;
 }
 
-const Disclaimer = ({ children }: DisclaimerProps) => (
-  <p className={styles.disclaimer}>
+const Disclaimer = ({ className, children }: DisclaimerProps) => (
+  <Typography.Paragraph className={cn(styles.disclaimer, className)}>
     {children}
-  </p>
+  </Typography.Paragraph>
 );
 
 export default Disclaimer;

@@ -1,8 +1,8 @@
 .root {
   margin: 0 auto;
   width: 100%;
-  max-width: var(--wrapper-width);
-  background: var(--color-bg);
+  max-width: 1024px;
+  background: var(--surface-secondary);
   box-shadow: 0 0 5px rgb(0 0 0 / 50%);
 
   @include only-phone {
@@ -14,7 +14,7 @@
 .main {
   position: relative;
   padding: 30px 30px 60px;
-  border-top: 5px solid var(--color-border);
+  border-top: 5px solid var(--border);
 
   @include only-phone {
     padding: 20px 20px 80px;

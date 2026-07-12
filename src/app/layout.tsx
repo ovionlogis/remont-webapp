@@ -1,20 +1,15 @@
+import { cn } from '@heroui/styles';
 import type { Metadata } from 'next';
-import { Arvo, Lato } from 'next/font/google';
+import { Lato } from 'next/font/google';
 
 // eslint-disable-next-line import-x/order
-import '@/styles/globals.css';
+import '../styles/globals.css';
 
 import BodyScripts from '@/components/BodyScripts';
 import Layout from '@/components/Layout';
+import LocaleProvider from '@/components/LocaleProvider';
 import config from '@/config';
 import { DEFAULT_DESCRIPTION, DEFAULT_TITLE } from '@/utils/metadata';
-
-const arvo = Arvo({
-  subsets: ['latin'],
-  weight: '400',
-  variable: '--font-arvo',
-  display: 'swap'
-});
 
 const lato = Lato({
   subsets: ['latin'],
@@ -33,14 +28,13 @@ export const metadata: Metadata = {
 };
 
 const RootLayout = ({ children }: Readonly<{ children: React.ReactNode }>) => (
-  <html
-    className={`${arvo.variable} ${lato.variable}`}
-    lang="ru"
-  >
-    <body>
-      <Layout>
-        {children}
-      </Layout>
+  <html lang="ru">
+    <body className={cn(lato.variable, 'text-foreground', 'bg-backgroun', 'light')}>
+      <LocaleProvider>
+        <Layout>
+          {children}
+        </Layout>
+      </LocaleProvider>
 
       <BodyScripts />
     </body>

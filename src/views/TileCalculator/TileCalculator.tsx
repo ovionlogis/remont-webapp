@@ -1,18 +1,21 @@
 'use client';
 
 import { useCallback, useMemo, useState } from 'react';
+import { Typography } from '@heroui/react';
 
 import CalculatorGrid from '@/components/CalculatorGrid';
 import CalculatorPage from '@/components/CalculatorPage';
 import CalculatorSection from '@/components/CalculatorSection';
 import Disclaimer from '@/components/Disclaimer';
 import Faq from '@/components/Faq';
+import FieldGroup from '@/components/FieldGroup';
 import NumberField from '@/components/NumberField';
 import RelatedCalculators from '@/components/RelatedCalculators';
 import ResultCard from '@/components/ResultCard';
 import SegmentedControl from '@/components/SegmentedControl';
 import SelectField from '@/components/SelectField';
 import { formatNumber, isInRange, parseNumber } from '@/utils/calculator';
+import { METER_FORMAT, MILLIMETER_FORMAT, PERCENT_FORMAT } from '@/utils/numberFieldFormats';
 
 import { faqItems } from './faqItems';
 
@@ -119,7 +122,9 @@ const TileCalculator = () => {
     { label: 'Площадь помещения', value: `${formatNumber(result.netAreaM2)} м²` },
     { label: 'Площадь с запасом', value: `${formatNumber(result.purchaseAreaM2)} м²` },
     { label: 'Запас на подрезку', value: `${result.waste}%` },
-    ...(result.boxes !== null ? [{ label: 'Упаковок', value: `${result.boxes} шт.` }] : [])
+    ...(result.boxes !== null ? [{ label: 'Упаковок', value: `${result.boxes} шт.` }] : []),
+    { label: 'Формат плитки', value: `${tileLengthMm} × ${tileWidthMm} мм` },
+    { label: 'Способ укладки', value: LAYOUT_OPTIONS.find((option) => option.value === layout)?.label ?? '' }
   ] : [];
 
   return (
@@ -130,90 +135,102 @@ const TileCalculator = () => {
       <CalculatorGrid
         fields={(
           <>
-            <SegmentedControl
-              label="Как ввести площадь"
-              options={[
-                { value: 'dimensions', label: 'Длина × ширина' },
-                { value: 'area', label: 'Площадь напрямую' }
-              ]}
-              value={areaMode}
-              onChange={setAreaMode}
-            />
-
-            {areaMode === 'dimensions' ? (
-              <>
-                <NumberField
-                  label="Длина помещения"
-                  unit="м"
-                  value={lengthM}
-                  onChange={setLengthM}
-                />
-                <NumberField
-                  label="Ширина помещения"
-                  unit="м"
-                  value={widthM}
-                  onChange={setWidthM}
-                />
-              </>
-            ) : (
-              <NumberField
-                label="Площадь помещения"
-                unit="м²"
-                value={areaM2}
-                onChange={setAreaM2}
+            <FieldGroup title="Помещение">
+              <SegmentedControl
+                label="Как ввести площадь"
+                options={[
+                  { value: 'dimensions', label: 'Длина × ширина' },
+                  { value: 'area', label: 'Площадь напрямую' }
+                ]}
+                value={areaMode}
+                onChange={setAreaMode}
               />
-            )}
 
-            <NumberField
-              hint="Двери, ниши, зоны без плитки — если хотите вычесть из расчёта"
-              label="Площадь проёмов без плитки"
-              unit="м²"
-              value={deductionM2}
-              onChange={setDeductionM2}
-            />
+              {areaMode === 'dimensions' ? (
+                <>
+                  <NumberField
+                    formatOptions={METER_FORMAT}
+                    label="Длина помещения"
+                    value={lengthM}
+                    onChange={setLengthM}
+                  />
+                  <NumberField
+                    formatOptions={METER_FORMAT}
+                    label="Ширина помещения"
+                    value={widthM}
+                    onChange={setWidthM}
+                  />
+                </>
+              ) : (
+                <NumberField
+                  label="Площадь помещения"
+                  unit="м²"
+                  value={areaM2}
+                  onChange={setAreaM2}
+                />
+              )}
 
-            <SelectField
-              label="Формат плитки"
-              options={TILE_PRESETS.map((preset) => ({ value: preset.value, label: preset.label }))}
-              value={tilePreset}
-              onChange={handlePresetChange}
-            />
+              <NumberField
+                hint="Двери, ниши, зоны без плитки — если хотите вычесть из расчёта"
+                label="Площадь проёмов без плитки"
+                unit="м²"
+                value={deductionM2}
+                onChange={setDeductionM2}
+              />
+            </FieldGroup>
 
-            <NumberField
-              label="Длина плитки"
-              unit="мм"
-              value={tileLengthMm}
-              onChange={setTileLengthMm}
-            />
-            <NumberField
-              label="Ширина плитки"
-              unit="мм"
-              value={tileWidthMm}
-              onChange={setTileWidthMm}
-            />
+            <FieldGroup title="Плитка">
+              <SelectField
+                label="Формат плитки"
+                options={TILE_PRESETS.map((preset) => ({ value: preset.value, label: preset.label }))}
+                value={tilePreset}
+                onChange={handlePresetChange}
+              />
 
-            <SegmentedControl
-              label="Способ укладки"
-              options={LAYOUT_OPTIONS.map((option) => ({ value: option.value, label: option.label }))}
-              value={layout}
-              onChange={handleLayoutChange}
-            />
+              {tilePreset === 'custom' && (
+                <>
+                  <NumberField
+                    formatOptions={MILLIMETER_FORMAT}
+                    label="Длина плитки"
+                    value={tileLengthMm}
+                    onChange={setTileLengthMm}
+                  />
+                  <NumberField
+                    formatOptions={MILLIMETER_FORMAT}
+                    label="Ширина плитки"
+                    value={tileWidthMm}
+                    onChange={setTileWidthMm}
+                  />
+                </>
+              )}
+            </FieldGroup>
 
-            <NumberField
-              hint="Подобран под способ укладки, можно изменить вручную"
-              label="Запас на подрезку"
-              unit="%"
-              value={wastePercent}
-              onChange={setWastePercent}
-            />
+            <FieldGroup title="Укладка и запас">
+              <SegmentedControl
+                label="Способ укладки"
+                options={LAYOUT_OPTIONS.map((option) => ({ value: option.value, label: option.label }))}
+                value={layout}
+                onChange={handleLayoutChange}
+              />
 
-            <NumberField
-              hint="Если известно — посчитаем количество упаковок"
-              label="Плиток в упаковке"
-              unit="шт."
-              value={tilesPerBox}
-              onChange={setTilesPerBox}
-            />
+              <NumberField
+                formatOptions={PERCENT_FORMAT}
+                hint="Подобран под способ укладки, можно изменить вручную"
+                label="Запас на подрезку"
+                value={wastePercent}
+                onChange={setWastePercent}
+              />
+            </FieldGroup>
+
+            <FieldGroup title="Упаковка">
+              <NumberField
+                hint="Если известно — посчитаем количество упаковок"
+                label="Плиток в упаковке"
+                unit="шт."
+                value={tilesPerBox}
+                onChange={setTilesPerBox}
+              />
+            </FieldGroup>
           </>
         )}
         result={(
@@ -229,19 +246,19 @@ const TileCalculator = () => {
       />
 
       <CalculatorSection title="Как считает калькулятор">
-        <p>
+        <Typography.Paragraph>
           Расчёт делится на два шага: сначала площадь плитки в штуке (длина × ширина в миллиметрах,
           переведённая в м²), затем площадь помещения делится на площадь одной плитки. К результату
           добавляется запас на подрезку — он зависит от способа укладки, потому что диагональная
           укладка и укладка со смещением требуют больше резов по краям и углам.
-        </p>
+        </Typography.Paragraph>
 
-        <p>
+        <Typography.Paragraph>
           Что не учитывается автоматически: бой плитки при транспортировке и укладке, а также
           дополнительная подрезка в сложных местах — например, вокруг труб в санузле. Такие случаи
           стоит закладывать увеличением запаса вручную. Результат — ориентир для закупки материала,
           а не бюджет ремонта: стоимость самих работ по укладке смотрите в прайс-листе.
-        </p>
+        </Typography.Paragraph>
       </CalculatorSection>
 
       <Faq items={faqItems} />

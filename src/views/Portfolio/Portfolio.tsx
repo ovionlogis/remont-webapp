@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useState } from 'react';
+import { Typography } from '@heroui/react';
 import Image from 'next/image';
 import Lightbox from 'yet-another-react-lightbox';
 import Captions from 'yet-another-react-lightbox/plugins/captions';
@@ -64,9 +65,12 @@ const Portfolio = () => {
 
   return (
     <div className={styles.content}>
-      <h1 className={styles.heading}>
+      <Typography.Heading
+        className={styles.heading}
+        level={1}
+      >
         Портфолио выполненных работ
-      </h1>
+      </Typography.Heading>
 
       <div className={styles.grid}>
         {data.map((image, i) => (

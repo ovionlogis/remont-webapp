@@ -1,0 +1,22 @@
+.group {
+  @include mediaLgMin {
+    grid-column: 1 / -1;
+  }
+}
+
+.legend {
+  margin: 0 0 0.5em;
+  text-transform: uppercase;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  column-gap: 16px;
+
+  @include mediaLgMin {
+    display: grid;
+    align-items: start;
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

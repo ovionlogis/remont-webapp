@@ -1,7 +1,7 @@
 .grid {
   display: grid;
-  grid-template-columns: 1.2fr 1fr;
   align-items: start;
+  grid-template-columns: 1.2fr 1fr;
   gap: 24px;
 
   @include mediaSmMax {
@@ -12,7 +12,13 @@
 .fields {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 32px;
+
+  @include mediaLgMin {
+    display: grid;
+    align-items: start;
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 .result {

@@ -1,3 +1,5 @@
+import { Typography } from '@heroui/react';
+
 import styles from './CalculatorSection.module.scss';
 
 interface CalculatorSectionProps {
@@ -8,9 +10,12 @@ interface CalculatorSectionProps {
 const CalculatorSection = ({ title, children }: CalculatorSectionProps) => (
   <section className={styles.section}>
     {title ? (
-      <h2 className={styles.title}>
+      <Typography.Heading
+        className={styles.title}
+        level={2}
+      >
         {title}
-      </h2>
+      </Typography.Heading>
     ) : null}
 
     <div className={styles.body}>

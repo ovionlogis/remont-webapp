@@ -1,6 +1,9 @@
 'use client';
 
 import { useCallback } from 'react';
+import {
+  Description, Label, ListBox, Select
+} from '@heroui/react';
 
 import styles from './SelectField.module.scss';
 
@@ -20,37 +23,41 @@ interface SelectFieldProps {
 const SelectField = ({
   label, value, onChange, options, hint
 }: SelectFieldProps) => {
-  const handleChange = useCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
-    onChange(event.target.value);
+  const handleSelectionChange = useCallback((key: React.Key | null) => {
+    if (key !== null) {
+      onChange(String(key));
+    }
   }, [onChange]);
 
   return (
-    <label className={styles.field}>
-      <span className={styles.label}>
-        {label}
-      </span>
+    <Select
+      className={styles.field}
+      fullWidth
+      selectedKey={value}
+      onSelectionChange={handleSelectionChange}
+    >
+      <Label>{label}</Label>
 
-      <select
-        className={styles.select}
-        value={value}
-        onChange={handleChange}
-      >
-        {options.map((option) => (
-          <option
-            key={option.value}
-            value={option.value}
-          >
-            {option.label}
-          </option>
-        ))}
-      </select>
+      <Select.Trigger>
+        <Select.Value />
+        <Select.Indicator />
+      </Select.Trigger>
 
-      {hint ? (
-        <span className={styles.hint}>
-          {hint}
-        </span>
-      ) : null}
-    </label>
+      <Select.Popover>
+        <ListBox items={options}>
+          {(option) => (
+            <ListBox.Item
+              id={option.value}
+              textValue={option.label}
+            >
+              {option.label}
+            </ListBox.Item>
+          )}
+        </ListBox>
+      </Select.Popover>
+
+      {hint ? <Description>{hint}</Description> : null}
+    </Select>
   );
 };
 

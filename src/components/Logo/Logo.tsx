@@ -10,9 +10,9 @@ const Logo = ({ className }: LogoProps) => (
   <Image
     alt="Логотип компании"
     className={className}
-    height={logo.height / 3}
+    height={logo.height / 6}
     src={logo}
-    width={logo.width / 3}
+    width={logo.width / 6}
   />
 );
 

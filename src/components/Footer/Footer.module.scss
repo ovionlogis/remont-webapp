@@ -6,37 +6,31 @@
   position: relative;
   display: block;
   padding: 20px 30px 15px;
-  font-family: var(--font-body);
-  font-size: 14px;
-  text-shadow: 0 -1px 0 rgb(0 0 0 / 40%);
-  color: var(--color-footer-text);
-  background-color: var(--color-dark);
-  border-top: 3px solid var(--color-accent);
+  color: var(--background);
+  background-color: var(--foreground);
+  border-top: 3px solid var(--accent);
 
   div {
     margin-top: 0;
     margin-bottom: 10px;
-    font-family: var(--font-ui);
     font-size: 18px;
     font-weight: 700;
-    color: var(--color-accent);
+    color: var(--accent);
   }
 }
 
 .links {
+  margin: 16px 0 0;
   display: flex;
   flex-wrap: wrap;
   gap: 4px 16px;
-  margin: 0;
-  padding: 0;
   list-style: none;
+  padding: 0;
 
   a {
-    font-family: var(--font-body);
-    font-size: 14px;
     font-weight: 400;
-    color: var(--color-footer-text);
     text-decoration: underline;
+    color: var(--background);
   }
 }
 
@@ -45,17 +39,15 @@
   width: 100%;
   height: 8px;
   padding: 0;
-  background: #5a453b;
+  background: rgb(255 255 255 / 8%);
   border: none;
-  border-top: 1px solid #644d42;
-  border-bottom: 1px solid #523f35;
+  border-top: 1px solid rgb(255 255 255 / 12%);
+  border-bottom: 1px solid rgb(0 0 0 / 20%);
 }
 
 .copyright {
   padding: 15px 30px;
-  font-size: 13px;
   text-align: center;
-  text-shadow: 0 -1px 0 rgb(0 0 0 / 50%);
-  color: var(--color-accent);
-  background: var(--color-dark) url('./footer.png') repeat-x center top;
+  color: var(--accent);
+  background: var(--foreground);
 }

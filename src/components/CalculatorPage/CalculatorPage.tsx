@@ -1,3 +1,5 @@
+import { Typography } from '@heroui/react';
+
 import styles from './CalculatorPage.module.scss';
 
 interface CalculatorPageProps {
@@ -9,13 +11,16 @@ interface CalculatorPageProps {
 const CalculatorPage = ({ title, intro, children }: CalculatorPageProps) => (
   <div className={styles.content}>
     <div className={styles.head}>
-      <h1 className={styles.title}>
+      <Typography.Heading
+        className={styles.title}
+        level={1}
+      >
         {title}
-      </h1>
+      </Typography.Heading>
 
-      <p className={styles.intro}>
+      <Typography.Paragraph className={styles.intro}>
         {intro}
-      </p>
+      </Typography.Paragraph>
     </div>
 
     {children}

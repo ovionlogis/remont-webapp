@@ -2,17 +2,14 @@
   display: flex;
   flex-direction: column;
   gap: 32px;
-  text-shadow: 0 1px 0 rgb(255 255 255 / 50%);
 }
 
 .title {
   margin: 0;
-  font-family: var(--font-ui);
 }
 
 .intro {
   margin: 0;
-  font-size: 16px;
   line-height: 1.5;
 }
 
@@ -24,7 +21,6 @@
 
 .categoryTitle {
   margin: 0;
-  font-family: var(--font-ui);
   font-size: 22px;
 }
 
@@ -43,32 +39,9 @@
   }
 }
 
-.card {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding: 16px;
-  background: rgb(0 0 0 / 4%);
-  border-radius: 4px;
-}
-
-.cardTitle {
-  font-family: var(--font-ui);
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--color-text);
-}
-
-.cardDescription {
-  margin: 0;
-  font-size: 14px;
-  line-height: 1.4;
-  color: var(--color-dark);
-}
-
 .footerText {
   margin: 0;
   font-size: 14px;
   line-height: 1.5;
-  color: var(--color-dark);
+  color: var(--muted);
 }

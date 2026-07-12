@@ -1,13 +1,31 @@
 .header {
+  background: var(--surface-secondary);
+  box-shadow: 0 2px 6px rgb(0 0 0 / 15%);
+
+  @include only-phone {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+}
+
+.top {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
   padding: 24px 30px;
-  background-image: url('./header.png');
-  background-position: 50% 0;
 
   @include only-phone {
-    padding: 20px 20px;
+    padding: 16px 20px;
+
+    .contacts {
+      order: 1;
+    }
+
+    nav {
+      order: 2;
+    }
   }
 }
 
@@ -18,34 +36,28 @@
     gap: 12px;
     text-decoration: none;
 
-    &:hover {
-      opacity: 0.8;
-    }
-
     @include mediaXXs {
       gap: 4px;
+    }
+
+    &:hover {
+      opacity: 0.8;
     }
   }
 }
 
 .logoImage {
   flex-shrink: 0;
-  width: 64px;
-  height: 64px;
-
-  @include mediaSmMax {
-    width: 44px;
-    height: 44px;
-  }
+  width: 32px;
+  height: 32px;
 }
 
 .brandName {
-  font-family: var(--font-body);
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 700;
   line-height: 1.2;
-  color: var(--color-text);
   white-space: nowrap;
+  color: var(--foreground);
 
   @include mediaSmMax {
     font-size: 16px;
@@ -62,32 +74,41 @@
 
 .contacts {
   display: flex;
+  flex-shrink: 0;
   align-items: center;
+  gap: 10px;
+}
+
+.phoneIcon {
+  flex-shrink: 0;
+  color: var(--accent);
+
+  @include mediaXs {
+    display: none;
+  }
 }
 
 .phone {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+
   a {
-    font-family: var(--font-ui);
-    font-size: 26px;
     font-weight: 700;
     text-decoration: none;
-    color: inherit;
     white-space: nowrap;
 
-    &:hover {
-      opacity: 0.8;
-    }
-
-    @include mediaSmMax {
-      font-size: 18px;
-    }
-
     @include mediaXs {
-      font-size: 16px;
+      font-size: 14px;
     }
 
     @include mediaXXs {
-      font-size: 13px;
+      font-size: 12px;
+    }
+
+    &:hover {
+      opacity: 0.8;
     }
   }
 }

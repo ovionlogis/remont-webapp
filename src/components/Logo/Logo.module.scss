@@ -1,11 +1,10 @@
 .logo {
   display: flex;
   flex-direction: column;
-  font-family: var(--font-body);
   line-height: 1.15;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--color-bg);
+  color: var(--foreground);
 }
 
 .main {

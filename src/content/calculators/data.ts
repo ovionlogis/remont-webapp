@@ -1,3 +1,13 @@
+import {
+  Grid2x2,
+  Layers3,
+  PaintBucket,
+  PaintRoller,
+  TableCellsSplit,
+  Wallpaper
+} from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
+
 export interface CalculatorCategory {
   slug: string;
   title: string;
@@ -11,6 +21,7 @@ export interface CalculatorTool {
   category: string;
   description: string;
   priceCategorySlug: string;
+  icon: LucideIcon;
 }
 
 export const calculatorCategories: CalculatorCategory[] = [
@@ -38,7 +49,8 @@ export const calculatorTools: CalculatorTool[] = [
     shortTitle: 'Плитка',
     category: 'finishing',
     description: 'Сколько плитки нужно на пол или стены с учётом способа укладки и запаса на подрезку.',
-    priceCategorySlug: 'tiling'
+    priceCategorySlug: 'tiling',
+    icon: Grid2x2
   },
   {
     slug: 'wallpaper',
@@ -46,7 +58,8 @@ export const calculatorTools: CalculatorTool[] = [
     shortTitle: 'Обои',
     category: 'finishing',
     description: 'Количество рулонов обоев по периметру комнаты, ширине рулона и раппорту рисунка.',
-    priceCategorySlug: 'wallpaper'
+    priceCategorySlug: 'wallpaper',
+    icon: Wallpaper
   },
   {
     slug: 'laminate',
@@ -54,7 +67,8 @@ export const calculatorTools: CalculatorTool[] = [
     shortTitle: 'Ламинат',
     category: 'finishing',
     description: 'Число упаковок ламината по площади помещения и размеру доски.',
-    priceCategorySlug: 'flooring'
+    priceCategorySlug: 'flooring',
+    icon: TableCellsSplit
   },
   {
     slug: 'putty-consumption',
@@ -62,7 +76,8 @@ export const calculatorTools: CalculatorTool[] = [
     shortTitle: 'Шпаклёвка',
     category: 'materials',
     description: 'Расход шпаклёвки в кг и мешках по площади, толщине слоя и типу материала.',
-    priceCategorySlug: 'plastering'
+    priceCategorySlug: 'plastering',
+    icon: PaintRoller
   },
   {
     slug: 'paint-consumption',
@@ -70,7 +85,8 @@ export const calculatorTools: CalculatorTool[] = [
     shortTitle: 'Краска',
     category: 'materials',
     description: 'Расход краски в литрах и банках по площади и количеству слоёв.',
-    priceCategorySlug: 'painting'
+    priceCategorySlug: 'painting',
+    icon: PaintBucket
   },
   {
     slug: 'floor-screed',
@@ -78,6 +94,7 @@ export const calculatorTools: CalculatorTool[] = [
     shortTitle: 'Стяжка пола',
     category: 'floors',
     description: 'Количество сухой смеси или цемента и песка на стяжку пола заданной толщины.',
-    priceCategorySlug: 'floor-screed'
+    priceCategorySlug: 'floor-screed',
+    icon: Layers3
   }
 ];
