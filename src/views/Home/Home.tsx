@@ -1,4 +1,4 @@
-import { Typography } from '@heroui/react';
+import { Surface, Typography } from '@heroui/react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -64,25 +64,24 @@ const Home = () => (
     <section className={styles.section}>
       <ul className={styles.advantages}>
         {advantages.map((advantage) => (
-          <li
-            key={advantage.title}
-            className={styles.advantage}
-          >
-            <advantage.icon
-              aria-hidden
-              className={styles.advantageIcon}
-            />
+          <li key={advantage.title}>
+            <Surface className={styles.advantage}>
+              <advantage.icon
+                aria-hidden
+                className={styles.advantageIcon}
+              />
 
-            <Typography.Heading
-              className={styles.advantageTitle}
-              level={3}
-            >
-              {advantage.title}
-            </Typography.Heading>
+              <Typography.Heading
+                className={styles.advantageTitle}
+                level={3}
+              >
+                {advantage.title}
+              </Typography.Heading>
 
-            <Typography.Paragraph className={styles.advantageText}>
-              {advantage.text}
-            </Typography.Paragraph>
+              <Typography.Paragraph className={styles.advantageText}>
+                {advantage.text}
+              </Typography.Paragraph>
+            </Surface>
           </li>
         ))}
       </ul>
