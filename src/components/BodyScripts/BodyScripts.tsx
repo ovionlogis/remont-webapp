@@ -41,30 +41,15 @@ const BodyScripts = () => (
           for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
           k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
           (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
-
+      
           ym(${config.METRIKA_ID}, "init", {
-            ssr:true,
-            webvisor:true,
             clickmap:true,
-            accurateTrackBounce:true,
             trackLinks:true,
-            referrer: document.referrer,
-            url: location.href
+            accurateTrackBounce:true,
+            webvisor:true
           });
         `}
       </Script>
-    )}
-
-    {!!config.METRIKA_ID && (
-      <noscript>
-        <div>
-          <img
-            alt=""
-            src={`https://mc.yandex.ru/watch/${config.METRIKA_ID}`}
-            style={{ position: 'absolute', left: '-9999px' }}
-          />
-        </div>
-      </noscript>
     )}
 
     <script
