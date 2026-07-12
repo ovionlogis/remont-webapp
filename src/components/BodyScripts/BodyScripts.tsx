@@ -46,7 +46,6 @@ const BodyScripts = () => (
             ssr:true,
             webvisor:true,
             clickmap:true,
-            ecommerce:"dataLayer",
             accurateTrackBounce:true,
             trackLinks:true,
             referrer: document.referrer,
@@ -54,6 +53,18 @@ const BodyScripts = () => (
           });
         `}
       </Script>
+    )}
+
+    {!!config.METRIKA_ID && (
+      <noscript>
+        <div>
+          <img
+            alt=""
+            src={`https://mc.yandex.ru/watch/${config.METRIKA_ID}`}
+            style={{ position: 'absolute', left: '-9999px' }}
+          />
+        </div>
+      </noscript>
     )}
 
     <script
