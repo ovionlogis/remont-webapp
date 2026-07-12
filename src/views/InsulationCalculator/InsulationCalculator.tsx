@@ -20,10 +20,18 @@ import { METER_FORMAT, MILLIMETER_FORMAT, PERCENT_FORMAT } from '@/utils/numberF
 import { faqItems } from './faqItems';
 
 const INSULATION_TYPES = [
-  { value: 'mineral-slab', label: 'Минеральная вата в плитах' },
-  { value: 'mineral-roll', label: 'Минеральная вата в рулонах' },
-  { value: 'xps', label: 'Пеноплекс / экструдированный пенополистирол' },
-  { value: 'sprayed-pu', label: 'Напыляемый пенополиуретан' }
+  {
+    value: 'mineral-slab', label: 'Минеральная вата в плитах', waste: 7, packaged: true
+  },
+  {
+    value: 'mineral-roll', label: 'Минеральная вата в рулонах', waste: 12, packaged: true
+  },
+  {
+    value: 'xps', label: 'Пеноплекс / экструдированный пенополистирол', waste: 5, packaged: true
+  },
+  {
+    value: 'sprayed-pu', label: 'Напыляемый пенополиуретан', waste: 10, packaged: false
+  }
 ];
 
 const PACK_VOLUME_PRESETS = [
@@ -40,7 +48,7 @@ const InsulationCalculator = () => {
   const [openingsM2, setOpeningsM2] = useState('0');
   const [insulationType, setInsulationType] = useState('mineral-slab');
   const [thicknessMm, setThicknessMm] = useState('100');
-  const [wastePercent, setWastePercent] = useState('10');
+  const [wastePercent, setWastePercent] = useState('7');
   const [packVolumePreset, setPackVolumePreset] = useState('0.3');
   const [packVolumeM3, setPackVolumeM3] = useState('0.3');
 
@@ -48,6 +56,19 @@ const InsulationCalculator = () => {
     setPackVolumePreset(value);
     setPackVolumeM3(value);
   }, []);
+
+  const handleInsulationTypeChange = useCallback((value: string) => {
+    setInsulationType(value);
+
+    const option = INSULATION_TYPES.find((item) => item.value === value);
+
+    if (option) {
+      setWastePercent(String(option.waste));
+    }
+  }, []);
+
+  const selectedType = INSULATION_TYPES.find((item) => item.value === insulationType);
+  const isPackaged = selectedType?.packaged ?? true;
 
   const result = useMemo(() => {
     const areaDirect = parseNumber(areaM2);
@@ -77,10 +98,10 @@ const InsulationCalculator = () => {
     }
 
     const volumeM3 = area * (thickness / 1000) * (1 + waste / 100);
-    const packs = packVolume !== null && packVolume > 0 ? Math.ceil(volumeM3 / packVolume) : null;
+    const packs = isPackaged && packVolume !== null && packVolume > 0 ? Math.ceil(volumeM3 / packVolume) : null;
 
     return { area, volumeM3, packs };
-  }, [areaMode, areaM2, perimeterM, heightM, openingsM2, thicknessMm, wastePercent, packVolumeM3]);
+  }, [areaMode, areaM2, perimeterM, heightM, openingsM2, thicknessMm, wastePercent, packVolumeM3, isPackaged]);
 
   const metrics = result ? [
     { label: 'Площадь поверхности', value: `${formatNumber(result.area)} м²` },
@@ -88,6 +109,23 @@ const InsulationCalculator = () => {
     ...(result.packs !== null ? [{ label: 'Упаковок', value: `${result.packs} шт.` }] : []),
     { label: 'Тип утеплителя', value: INSULATION_TYPES.find((type) => type.value === insulationType)?.label ?? '' }
   ] : [];
+
+  const heightValue = parseNumber(heightM);
+  const heightError = areaMode === 'walls' && heightValue !== null && !isInRange(heightValue, 2, 4.5)
+    ? 'Обычно 2–4.5 м'
+    : undefined;
+
+  const perimeterValue = parseNumber(perimeterM);
+  const openingsValue = parseNumber(openingsM2);
+  const openingsError = areaMode === 'walls' && openingsValue !== null && perimeterValue !== null
+    && heightValue !== null && openingsValue >= perimeterValue * heightValue
+    ? 'Не может быть больше площади стен'
+    : undefined;
+
+  const packVolumeValue = parseNumber(packVolumeM3);
+  const packVolumeError = isPackaged && packVolumeValue !== null && packVolumeValue <= 0
+    ? 'Должен быть больше нуля'
+    : undefined;
 
   return (
     <CalculatorPage
@@ -124,12 +162,14 @@ const InsulationCalculator = () => {
                     onChange={setPerimeterM}
                   />
                   <NumberField
+                    error={heightError}
                     formatOptions={METER_FORMAT}
                     label="Высота"
                     value={heightM}
                     onChange={setHeightM}
                   />
                   <NumberField
+                    error={openingsError}
                     hint="Двери, окна и другие зоны без утепления"
                     label="Площадь проёмов"
                     unit="м²"
@@ -142,10 +182,11 @@ const InsulationCalculator = () => {
 
             <FieldGroup title="Утеплитель">
               <SelectField
+                hint={!isPackaged ? 'Напыляемый утеплитель заказывают по объёму у подрядчика, а не упаковками' : undefined}
                 label="Тип утеплителя"
                 options={INSULATION_TYPES}
                 value={insulationType}
-                onChange={setInsulationType}
+                onChange={handleInsulationTypeChange}
               />
 
               <NumberField
@@ -165,26 +206,31 @@ const InsulationCalculator = () => {
               />
             </FieldGroup>
 
-            <FieldGroup title="Упаковка">
-              <SelectField
-                label="Объём упаковки"
-                options={PACK_VOLUME_PRESETS}
-                value={packVolumePreset}
-                onChange={handlePackPresetChange}
-              />
+            {isPackaged && (
+              <FieldGroup title="Упаковка">
+                <SelectField
+                  label="Объём упаковки"
+                  options={PACK_VOLUME_PRESETS}
+                  value={packVolumePreset}
+                  onChange={handlePackPresetChange}
+                />
 
-              <NumberField
-                hint="Указан на этикетке упаковки — можно ввести своё значение"
-                label="Объём упаковки"
-                unit="м³"
-                value={packVolumeM3}
-                onChange={setPackVolumeM3}
-              />
-            </FieldGroup>
+                <NumberField
+                  error={packVolumeError}
+                  hint="Указан на этикетке упаковки — можно ввести своё значение"
+                  label="Объём упаковки"
+                  unit="м³"
+                  value={packVolumeM3}
+                  onChange={setPackVolumeM3}
+                />
+              </FieldGroup>
+            )}
           </>
         )}
         result={(
           <ResultCard
+            ctaHref="/price#insulation"
+            ctaLabel="Стоимость утепления в прайс-листе"
             heading="Нужно утеплителя"
             invalid={!result}
             invalidMessage="Укажите площадь поверхности и толщину слоя"

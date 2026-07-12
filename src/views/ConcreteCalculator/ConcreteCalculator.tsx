@@ -202,6 +202,7 @@ const ConcreteCalculator = () => {
                   />
                   <NumberField
                     formatOptions={MILLIMETER_FORMAT}
+                    hint="Диаметр бурения или опалубки, а не арматурного каркаса"
                     label="Диаметр"
                     value={columnDiameterMm}
                     onChange={setColumnDiameterMm}
@@ -246,6 +247,8 @@ const ConcreteCalculator = () => {
         )}
         result={(
           <ResultCard
+            ctaHref="/price#concrete"
+            ctaLabel="Стоимость бетонных работ в прайс-листе"
             heading="Нужно бетона"
             invalid={!result}
             invalidMessage="Укажите размеры конструкции для выбранной формы"

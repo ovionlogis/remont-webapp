@@ -71,6 +71,22 @@ const LaminateCalculator = () => {
     }
   }, []);
 
+  const handleBoardsPerPackChange = useCallback((value: string) => {
+    setBoardsPerPack(value);
+
+    if (value.trim() !== '') {
+      setPackAreaM2('');
+    }
+  }, []);
+
+  const handlePackAreaChange = useCallback((value: string) => {
+    setPackAreaM2(value);
+
+    if (value.trim() !== '') {
+      setBoardsPerPack('');
+    }
+  }, []);
+
   const result = useMemo(() => {
     const length = parseNumber(lengthM);
     const width = parseNumber(widthM);
@@ -231,7 +247,7 @@ const LaminateCalculator = () => {
                 label="Досок в упаковке"
                 unit="шт."
                 value={boardsPerPack}
-                onChange={setBoardsPerPack}
+                onChange={handleBoardsPerPackChange}
               />
 
               <NumberField
@@ -239,13 +255,15 @@ const LaminateCalculator = () => {
                 label="Площадь упаковки"
                 unit="м²"
                 value={packAreaM2}
-                onChange={setPackAreaM2}
+                onChange={handlePackAreaChange}
               />
             </FieldGroup>
           </>
         )}
         result={(
           <ResultCard
+            ctaHref="/price#flooring"
+            ctaLabel="Стоимость укладки ламината в прайс-листе"
             heading={heading}
             invalid={!result}
             invalidMessage="Укажите площадь помещения и размер доски"

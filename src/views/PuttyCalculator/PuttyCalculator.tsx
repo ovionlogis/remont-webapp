@@ -104,6 +104,25 @@ const PuttyCalculator = () => {
     { label: 'Слоёв', value: `${layers} шт.` }
   ] : [];
 
+  const heightValue = parseNumber(heightM);
+  const heightError = areaMode === 'walls' && heightValue !== null && !isInRange(heightValue, 2, 4.5)
+    ? 'Обычно 2–4.5 м'
+    : undefined;
+
+  const perimeterValue = parseNumber(perimeterM);
+  const openingsValue = parseNumber(openingsM2);
+  const openingsError = areaMode === 'walls' && openingsValue !== null && perimeterValue !== null
+    && heightValue !== null && openingsValue >= perimeterValue * heightValue
+    ? 'Не может быть больше площади стен'
+    : undefined;
+
+  const thicknessValue = parseNumber(thicknessMm);
+  const layersValue = parseNumber(layers);
+  const totalThicknessMm = thicknessValue !== null && layersValue !== null ? thicknessValue * layersValue : null;
+  const thicknessHint = totalThicknessMm !== null && totalThicknessMm > 10
+    ? `Суммарная толщина ${formatNumber(totalThicknessMm, 1)} мм — если больше 10 мм, скорее нужна штукатурка`
+    : 'Финишная шпаклёвка обычно кладётся слоем 1–2 мм';
+
   return (
     <CalculatorPage
       intro="Калькулятор считает расход шпаклёвки в килограммах и мешках по площади поверхности, толщине слоя и типу материала. Это ориентир для закупки материала, а не стоимость штукатурно-малярных работ."
@@ -139,12 +158,14 @@ const PuttyCalculator = () => {
                     onChange={setPerimeterM}
                   />
                   <NumberField
+                    error={heightError}
                     formatOptions={METER_FORMAT}
                     label="Высота стен"
                     value={heightM}
                     onChange={setHeightM}
                   />
                   <NumberField
+                    error={openingsError}
                     hint="Двери, окна и другие зоны без шпаклёвки"
                     label="Площадь проёмов"
                     unit="м²"
@@ -173,6 +194,7 @@ const PuttyCalculator = () => {
 
               <NumberField
                 formatOptions={MILLIMETER_FORMAT}
+                hint={thicknessHint}
                 label="Толщина слоя"
                 value={thicknessMm}
                 onChange={setThicknessMm}
@@ -213,6 +235,8 @@ const PuttyCalculator = () => {
         )}
         result={(
           <ResultCard
+            ctaHref="/price#plastering"
+            ctaLabel="Стоимость шпаклевочных работ в прайс-листе"
             heading="Нужно шпаклёвки"
             invalid={!result}
             invalidMessage="Укажите площадь, толщину слоя и норму расхода"

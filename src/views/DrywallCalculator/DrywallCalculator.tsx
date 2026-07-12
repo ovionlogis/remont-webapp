@@ -109,10 +109,22 @@ const DrywallCalculator = () => {
     { label: 'Слоёв', value: `${layers} шт.` }
   ] : [];
 
+  const heightValue = parseNumber(heightM);
+  const heightError = areaMode === 'walls' && heightValue !== null && !isInRange(heightValue, 2, 4.5)
+    ? 'Обычно 2–4.5 м'
+    : undefined;
+
+  const perimeterValue = parseNumber(perimeterM);
+  const openingsValue = parseNumber(openingsM2);
+  const openingsError = areaMode === 'walls' && openingsValue !== null && perimeterValue !== null
+    && heightValue !== null && openingsValue >= perimeterValue * heightValue
+    ? 'Не может быть больше площади стен'
+    : undefined;
+
   return (
     <CalculatorPage
       intro="Калькулятор считает количество листов гипсокартона, длину стоечного профиля и саморезы по площади стен или потолка. Это ориентир для закупки материала, а не проектный расчёт каркаса."
-      title="Калькулятор гипсокартона"
+      title="Калькулятор гипсокартона: листы, профиль и саморезы"
     >
       <CalculatorGrid
         fields={(
@@ -144,12 +156,14 @@ const DrywallCalculator = () => {
                     onChange={setPerimeterM}
                   />
                   <NumberField
+                    error={heightError}
                     formatOptions={METER_FORMAT}
                     label="Высота стен"
                     value={heightM}
                     onChange={setHeightM}
                   />
                   <NumberField
+                    error={openingsError}
                     hint="Двери, окна и другие зоны без обшивки"
                     label="Площадь проёмов"
                     unit="м²"
@@ -213,6 +227,8 @@ const DrywallCalculator = () => {
         )}
         result={(
           <ResultCard
+            ctaHref="/price#drywall"
+            ctaLabel="Стоимость монтажа гипсокартона в прайс-листе"
             heading="Нужно листов гипсокартона"
             invalid={!result}
             invalidMessage="Укажите площадь обшивки и параметры листа"
@@ -228,7 +244,8 @@ const DrywallCalculator = () => {
           Количество листов — это площадь обшивки, умноженная на число слоёв и увеличенная на
           процент запаса, делённая на площадь одного листа. Длина стоечного профиля — это площадь
           обшивки, делённая на шаг стоек, с учётом числа слоёв; саморезы считаются по норме расхода
-          на квадратный метр обшивки.
+          на квадратный метр обшивки, умноженной на число слоёв — при двух слоях реальный расход
+          может быть чуть выше из-за дополнительных саморезов между слоями, стоит закладывать запас.
         </Typography.Paragraph>
 
         <Typography.Paragraph>

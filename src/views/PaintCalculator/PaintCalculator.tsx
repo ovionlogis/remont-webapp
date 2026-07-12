@@ -75,7 +75,7 @@ const PaintCalculator = () => {
     const rate = override !== null && override > 0 ? override : typeOption?.rate ?? null;
 
     const isValid = area !== null && area > 0
-      && layersNum !== null && isInRange(layersNum, 1, 4)
+      && layersNum !== null && isInRange(layersNum, 1, 6)
       && waste !== null && isInRange(waste, 0, 20)
       && rate !== null && isInRange(rate, 0.05, 0.5);
 
@@ -99,6 +99,23 @@ const PaintCalculator = () => {
     { label: 'Тип краски', value: PAINT_TYPES.find((type) => type.value === paintType)?.label.replace(/\s*\(.*\)$/, '') ?? '' },
     { label: 'Слоёв', value: `${layers} шт.` }
   ] : [];
+
+  const heightValue = parseNumber(heightM);
+  const heightError = areaMode === 'walls' && heightValue !== null && !isInRange(heightValue, 2, 4.5)
+    ? 'Обычно 2–4.5 м'
+    : undefined;
+
+  const layersValue = parseNumber(layers);
+  const layersError = layersValue !== null && !isInRange(layersValue, 1, 6)
+    ? 'От 1 до 6 слоёв'
+    : undefined;
+
+  const perimeterValue = parseNumber(perimeterM);
+  const openingsValue = parseNumber(openingsM2);
+  const openingsError = areaMode === 'walls' && openingsValue !== null && perimeterValue !== null
+    && heightValue !== null && openingsValue >= perimeterValue * heightValue
+    ? 'Не может быть больше площади стен'
+    : undefined;
 
   return (
     <CalculatorPage
@@ -135,12 +152,14 @@ const PaintCalculator = () => {
                     onChange={setPerimeterM}
                   />
                   <NumberField
+                    error={heightError}
                     formatOptions={METER_FORMAT}
                     label="Высота стен"
                     value={heightM}
                     onChange={setHeightM}
                   />
                   <NumberField
+                    error={openingsError}
                     hint="Двери, окна и другие зоны без покраски"
                     label="Площадь проёмов"
                     unit="м²"
@@ -170,6 +189,7 @@ const PaintCalculator = () => {
 
             <FieldGroup title="Слои и запас">
               <NumberField
+                error={layersError}
                 label="Количество слоёв"
                 unit="шт."
                 value={layers}
@@ -202,6 +222,8 @@ const PaintCalculator = () => {
         )}
         result={(
           <ResultCard
+            ctaHref="/price#painting"
+            ctaLabel="Стоимость малярных работ в прайс-листе"
             heading="Нужно краски"
             invalid={!result}
             invalidMessage="Укажите площадь окрашивания, норму расхода и количество слоёв"

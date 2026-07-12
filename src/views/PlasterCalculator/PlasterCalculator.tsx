@@ -34,7 +34,7 @@ const BAG_WEIGHT_PRESETS = [
 ];
 
 const PlasterCalculator = () => {
-  const [areaMode, setAreaMode] = useState('walls');
+  const [areaMode, setAreaMode] = useState('area');
   const [areaM2, setAreaM2] = useState('30');
   const [perimeterM, setPerimeterM] = useState('14');
   const [heightM, setHeightM] = useState('2.7');
@@ -100,8 +100,21 @@ const PlasterCalculator = () => {
     { label: 'Применённая норма', value: `${formatNumber(result.rate)} кг/м²/мм${result.isOverride ? ' (ваша)' : ' (типовая)'}` },
     ...(result.bags !== null ? [{ label: 'Мешков', value: `${result.bags} шт.` }] : []),
     { label: 'Тип штукатурки', value: PLASTER_TYPES.find((type) => type.value === plasterType)?.label.replace(/\s*\(.*\)$/, '') ?? '' },
-    { label: 'Толщина слоя', value: `${thicknessMm} мм` }
+    { label: 'Толщина слоя', value: `${thicknessMm} мм` },
+    { label: 'Слоёв', value: `${layers} шт.` }
   ] : [];
+
+  const heightValue = parseNumber(heightM);
+  const heightError = areaMode === 'walls' && heightValue !== null && !isInRange(heightValue, 2, 4.5)
+    ? 'Обычно 2–4.5 м'
+    : undefined;
+
+  const perimeterValue = parseNumber(perimeterM);
+  const openingsValue = parseNumber(openingsM2);
+  const openingsError = areaMode === 'walls' && openingsValue !== null && perimeterValue !== null
+    && heightValue !== null && openingsValue >= perimeterValue * heightValue
+    ? 'Не может быть больше площади стен'
+    : undefined;
 
   return (
     <CalculatorPage
@@ -115,8 +128,8 @@ const PlasterCalculator = () => {
               <SegmentedControl
                 label="Как ввести площадь"
                 options={[
-                  { value: 'walls', label: 'Периметр × высота' },
-                  { value: 'area', label: 'Площадь напрямую' }
+                  { value: 'area', label: 'Площадь напрямую' },
+                  { value: 'walls', label: 'Периметр × высота' }
                 ]}
                 value={areaMode}
                 onChange={setAreaMode}
@@ -138,12 +151,14 @@ const PlasterCalculator = () => {
                     onChange={setPerimeterM}
                   />
                   <NumberField
+                    error={heightError}
                     formatOptions={METER_FORMAT}
                     label="Высота стен"
                     value={heightM}
                     onChange={setHeightM}
                   />
                   <NumberField
+                    error={openingsError}
                     hint="Двери, окна и другие зоны без штукатурки"
                     label="Площадь проёмов"
                     unit="м²"
@@ -212,6 +227,8 @@ const PlasterCalculator = () => {
         )}
         result={(
           <ResultCard
+            ctaHref="/price#plastering"
+            ctaLabel="Стоимость штукатурных работ в прайс-листе"
             heading="Нужно штукатурки"
             invalid={!result}
             invalidMessage="Укажите площадь, толщину слоя и норму расхода"

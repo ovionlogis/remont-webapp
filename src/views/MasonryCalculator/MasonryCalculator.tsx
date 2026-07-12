@@ -109,13 +109,16 @@ const MasonryCalculator = () => {
 
     const rawVolumeM3 = area * (thickness / 1000);
     const unitNetVolumeM3 = (unitLength / 1000) * (unitWidth / 1000) * (unitHeight / 1000);
-    const unitGrossVolumeM3 = ((unitLength + seam) / 1000) * ((unitWidth + seam) / 1000) * ((unitHeight + seam) / 1000);
+    // Шов есть только между кирпичами в ряду (длина) и между рядами (высота) — по ширине
+    // (глубине стены) кирпичи в один слой кладки идут встык, без шва.
+    const unitGrossVolumeM3 = ((unitLength + seam) / 1000) * (unitWidth / 1000) * ((unitHeight + seam) / 1000);
     const piecesBase = rawVolumeM3 / unitGrossVolumeM3;
     const pieces = Math.ceil(piecesBase * (1 + waste / 100));
     const mortarVolumeM3 = Math.max(rawVolumeM3 - piecesBase * unitNetVolumeM3, 0) * (1 + waste / 100);
+    const thicknessWarning = thickness < unitWidth;
 
     return {
-      area, rawVolumeM3, pieces, mortarVolumeM3
+      area, rawVolumeM3, pieces, mortarVolumeM3, thicknessWarning
     };
   }, [
     areaMode, areaM2, lengthM, heightM, openingsM2, thicknessMm,
@@ -237,11 +240,15 @@ const MasonryCalculator = () => {
         )}
         result={(
           <ResultCard
+            ctaHref="/price#masonry"
+            ctaLabel="Стоимость кладки в прайс-листе"
             heading={`Нужно ${unitLabel}`}
             invalid={!result}
             invalidMessage="Укажите площадь кладки, толщину стены и размеры кирпича или блока"
             metrics={metrics}
-            note="Раствор посчитан как разница между объёмом кладки и объёмом самих кирпичей или блоков без шва."
+            note={result?.thicknessWarning
+              ? 'Толщина кладки меньше ширины блока — проверьте, не перепутаны ли толщина стены и размер кирпича или блока.'
+              : 'Раствор посчитан как разница между объёмом кладки и объёмом самих кирпичей или блоков без шва.'}
             value={result ? `${result.pieces} шт.` : undefined}
           />
         )}

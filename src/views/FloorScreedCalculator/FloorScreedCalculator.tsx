@@ -26,6 +26,8 @@ const BAG_WEIGHT_PRESETS = [
   { value: '40', label: '40 кг' }
 ];
 
+const SAND_DENSITY_KG_M3 = 1500;
+
 const PROPORTION_PRESETS = [
   {
     value: '1:3', label: '1 : 3 (цемент : песок)', cementParts: 1, sandParts: 3
@@ -125,10 +127,11 @@ const FloorScreedCalculator = () => {
 
     const volumeM3 = area * (thickness / 1000) * (1 + waste / 100);
     const cementKg = volumeM3 * cementRate;
-    const sandM3 = volumeM3 * (sandPartsNum / (cementPartsNum + sandPartsNum));
+    const sandKg = cementKg * (sandPartsNum / cementPartsNum);
+    const sandM3 = sandKg / SAND_DENSITY_KG_M3;
 
     return {
-      method: 'volume' as const, area, thicknessWarning, volumeM3, cementKg, sandM3
+      method: 'volume' as const, area, thicknessWarning, volumeM3, cementKg, sandKg, sandM3
     };
   }, [
     areaMode, lengthM, widthM, areaM2, thicknessMm, calcMethod,
@@ -151,7 +154,7 @@ const FloorScreedCalculator = () => {
     metrics = [
       { label: 'Площадь помещения', value: `${formatNumber(result.area)} м²` },
       { label: 'Объём стяжки', value: `${formatNumber(result.volumeM3, 3)} м³` },
-      { label: 'Песка', value: `${formatNumber(result.sandM3, 3)} м³` },
+      { label: 'Песка', value: `${formatNumber(result.sandKg)} кг (≈ ${formatNumber(result.sandM3, 3)} м³)` },
       { label: 'Толщина стяжки', value: `${thicknessMm} мм` },
       { label: 'Пропорция цемент : песок', value: `${cementParts} : ${sandParts}` }
     ];
@@ -161,6 +164,16 @@ const FloorScreedCalculator = () => {
   const note = result?.thicknessWarning
     ? 'Толщина за пределами типового диапазона 30–100 мм — при таких значениях часто требуется армирование или другое решение (наливной пол при малой толщине), уточните у прораба.'
     : 'Расчёт смеси не заменяет проектный расчёт нагрузки на перекрытие и не учитывает армирование и маяки.';
+
+  const cementPartsValue = parseNumber(cementParts);
+  const cementPartsError = proportionPreset === 'custom' && cementPartsValue !== null && cementPartsValue <= 0
+    ? 'Должно быть больше нуля'
+    : undefined;
+
+  const sandPartsValue = parseNumber(sandParts);
+  const sandPartsError = proportionPreset === 'custom' && sandPartsValue !== null && sandPartsValue <= 0
+    ? 'Должно быть больше нуля'
+    : undefined;
 
   return (
     <CalculatorPage
@@ -261,12 +274,14 @@ const FloorScreedCalculator = () => {
                 {proportionPreset === 'custom' && (
                   <>
                     <NumberField
+                      error={cementPartsError}
                       label="Частей цемента"
                       unit="доля"
                       value={cementParts}
                       onChange={setCementParts}
                     />
                     <NumberField
+                      error={sandPartsError}
                       label="Частей песка"
                       unit="доля"
                       value={sandParts}
@@ -297,6 +312,8 @@ const FloorScreedCalculator = () => {
         )}
         result={(
           <ResultCard
+            ctaHref="/price#floor-screed"
+            ctaLabel="Стоимость устройства стяжки в прайс-листе"
             heading={heading}
             invalid={!result}
             invalidMessage="Укажите площадь, толщину и параметры выбранного способа расчёта"
@@ -311,8 +328,9 @@ const FloorScreedCalculator = () => {
         <Typography.Paragraph>
           Для готовой сухой смеси расход считается напрямую: площадь × толщина в миллиметрах × норма
           расхода смеси на м²/мм, с добавлением запаса. Для варианта «цемент + песок» сначала
-          считается объём стяжки в кубометрах, а затем масса цемента и объём песка — по выбранной
-          пропорции и норме расхода цемента на кубометр готовой смеси.
+          считается объём стяжки в кубометрах и масса цемента по норме расхода на кубометр готовой
+          смеси, а масса песка — от массы цемента по выбранной пропорции; для удобства заказа песок
+          также переведён в кубометры по средней насыпной плотности.
         </Typography.Paragraph>
 
         <Typography.Paragraph>

@@ -127,6 +127,20 @@ const TileCalculator = () => {
     { label: 'Способ укладки', value: LAYOUT_OPTIONS.find((option) => option.value === layout)?.label ?? '' }
   ] : [];
 
+  const lengthValue = parseNumber(lengthM);
+  const widthValue = parseNumber(widthM);
+
+  let areaValue: number | null = parseNumber(areaM2);
+
+  if (areaMode !== 'area') {
+    areaValue = lengthValue !== null && widthValue !== null ? lengthValue * widthValue : null;
+  }
+
+  const deductionValue = parseNumber(deductionM2);
+  const deductionError = areaValue !== null && deductionValue !== null && deductionValue >= areaValue
+    ? 'Не может быть больше площади помещения'
+    : undefined;
+
   return (
     <CalculatorPage
       intro="Калькулятор считает количество плитки в штуках и, при необходимости, в упаковках — по размерам помещения, формату плитки и способу укладки. Это ориентир для закупки материала, а не смета или стоимость облицовочных работ."
@@ -171,6 +185,7 @@ const TileCalculator = () => {
               )}
 
               <NumberField
+                error={deductionError}
                 hint="Двери, ниши, зоны без плитки — если хотите вычесть из расчёта"
                 label="Площадь проёмов без плитки"
                 unit="м²"
@@ -235,6 +250,8 @@ const TileCalculator = () => {
         )}
         result={(
           <ResultCard
+            ctaHref="/price#tiling"
+            ctaLabel="Стоимость укладки плитки в прайс-листе"
             heading="Нужно плитки"
             invalid={!result}
             invalidMessage="Укажите размеры помещения и плитки, чтобы увидеть расчёт"

@@ -99,7 +99,9 @@ const WallpaperCalculator = () => {
       && rollWidth !== null && isInRange(rollWidth, 0.3, 1.5)
       && rollLength !== null && isInRange(rollLength, 1, 25)
       && rapport !== null && isInRange(rapport, 0, 100)
-      && waste !== null && isInRange(waste, 0, 25);
+      && waste !== null && isInRange(waste, 0, 25)
+      && isInRange(doors, 0, 20)
+      && isInRange(windows, 0, 20);
 
     if (!isValid || perimeter === null || height === null || rollWidth === null || rollLength === null || rapport === null || waste === null) {
       return null;
@@ -110,7 +112,7 @@ const WallpaperCalculator = () => {
     const stripsPerRoll = Math.floor(rollLength / stripHeight);
 
     if (stripsPerRoll < 1) {
-      return null;
+      return { success: false as const, rapportTooLarge: true };
     }
 
     const perimeterEffective = Math.max(perimeter - (doors * DOOR_WIDTH_M + windows * WINDOW_WIDTH_M), rollWidth);
@@ -120,13 +122,13 @@ const WallpaperCalculator = () => {
     const wallAreaM2 = perimeter * height;
 
     return {
-      rollsNeeded, stripsNeeded, stripsPerRoll, wallAreaM2, waste
+      success: true as const, rollsNeeded, stripsNeeded, stripsPerRoll, wallAreaM2, waste
     };
   }, [perimeterMode, lengthM, widthM, perimeterM, heightM, rollWidthM, rollLengthM, rapportCm, doorCount, windowCount, wastePercent]);
 
   const rapportValue = parseNumber(rapportCm);
 
-  const metrics = result ? [
+  const metrics = result?.success ? [
     { label: 'Полос нужно', value: `${result.stripsNeeded} шт.` },
     { label: 'Полос из рулона', value: `${result.stripsPerRoll} шт.` },
     { label: 'Площадь стен', value: `${formatNumber(result.wallAreaM2)} м²` },
@@ -134,6 +136,10 @@ const WallpaperCalculator = () => {
     { label: 'Размер рулона', value: `${rollWidthM} × ${rollLengthM} м` },
     { label: 'Раппорт', value: rapportValue !== null && rapportValue > 0 ? `${rapportCm} см` : 'без подгонки' }
   ] : [];
+
+  const invalidMessage = result?.success === false && result.rapportTooLarge
+    ? 'При таком раппорте полоса не помещается в рулон — уменьшите раппорт или увеличьте длину рулона'
+    : 'Укажите размеры комнаты, высоту потолков и параметры рулона';
 
   return (
     <CalculatorPage
@@ -221,12 +227,14 @@ const WallpaperCalculator = () => {
 
             <FieldGroup title="Проёмы и запас">
               <NumberField
+                hint="Считается по стандартной ширине проёма ~0.8 м"
                 label="Дверных проёмов"
                 unit="шт."
                 value={doorCount}
                 onChange={setDoorCount}
               />
               <NumberField
+                hint="Считается по стандартной ширине проёма ~0.6 м"
                 label="Оконных проёмов"
                 unit="шт."
                 value={windowCount}
@@ -245,12 +253,14 @@ const WallpaperCalculator = () => {
         )}
         result={(
           <ResultCard
+            ctaHref="/price#wallpaper"
+            ctaLabel="Стоимость поклейки обоев в прайс-листе"
             heading="Нужно рулонов"
-            invalid={!result}
-            invalidMessage="Укажите размеры комнаты, высоту потолков и параметры рулона"
+            invalid={!result?.success}
+            invalidMessage={invalidMessage}
             metrics={metrics}
             note="Обои клеятся целыми полосами по периметру — остаток по высоте от последнего рулона идёт в отход."
-            value={result ? `${result.rollsNeeded} ${pluralize(result.rollsNeeded, ROLL_UNIT_FORMS)}` : undefined}
+            value={result?.success ? `${result.rollsNeeded} ${pluralize(result.rollsNeeded, ROLL_UNIT_FORMS)}` : undefined}
           />
         )}
       />

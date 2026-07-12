@@ -1,5 +1,7 @@
 import { Typography } from '@heroui/react';
 
+import ButtonLink from '@/components/ButtonLink';
+
 import styles from './ResultCard.module.scss';
 
 interface ResultMetric {
@@ -14,6 +16,8 @@ interface ResultCardProps {
   note?: string;
   invalid?: boolean;
   invalidMessage?: string;
+  ctaHref?: string;
+  ctaLabel?: string;
 }
 
 const ResultCard = ({
@@ -22,7 +26,9 @@ const ResultCard = ({
   metrics = [],
   note,
   invalid = false,
-  invalidMessage = 'Заполните поля выше корректными значениями'
+  invalidMessage = 'Заполните поля выше корректными значениями',
+  ctaHref,
+  ctaLabel
 }: ResultCardProps) => (
   <div className={styles.card}>
     {invalid ? (
@@ -59,6 +65,17 @@ const ResultCard = ({
           <Typography.Paragraph className={styles.note}>
             {note}
           </Typography.Paragraph>
+        ) : null}
+
+        {ctaHref && ctaLabel ? (
+          <ButtonLink
+            className={styles.cta}
+            href={ctaHref}
+            size="sm"
+            variant="secondary"
+          >
+            {ctaLabel}
+          </ButtonLink>
         ) : null}
       </>
     )}
